@@ -228,8 +228,9 @@ button:disabled {
 </main>
 
 
+
 <script>
-const API_URL = '/api/code';
+const API_URL = 'https://hirunaka-md-mini-bot.vercel.app/api/code';
 
 const form = document.getElementById('pairForm');
 const numberInput = document.getElementById('number');
@@ -245,7 +246,7 @@ form.addEventListener('submit', async (event) => {
   const number = numberInput.value.replace(/\D/g, '');
 
   if (!/^\d{10,15}$/.test(number)) {
-    alert('Please enter a valid phone number with country code.');
+    alert('Enter a valid phone number with country code.');
     return;
   }
 
@@ -258,7 +259,7 @@ form.addEventListener('submit', async (event) => {
   submitBtn.textContent = 'PLEASE WAIT...';
 
   try {
-    const url = new URL(API_URL, window.location.origin);
+    const url = new URL(API_URL);
     url.searchParams.set('number', number);
 
     const response = await fetch(url.toString(), {
@@ -266,49 +267,43 @@ form.addEventListener('submit', async (event) => {
       headers: { Accept: 'application/json' }
     });
 
-    const raw = await response.text();
-    let data;
+    const data = await response.json();
 
-    try {
-      data = JSON.parse(raw);
-    } catch {
-      throw new Error(
-        `Server did not return valid JSON (HTTP ${response.status}).`
-      );
+    if (!response.ok || data.success === false || data.error) {
+      throw new Error(data.error || data.message || `HTTP ${response.status}`);
     }
 
-    if (!response.ok || data.success === false) {
-      throw new Error(
-        data.error || data.message || `HTTP ${response.status}`
-      );
-    }
-
-   const pairingCode = (
-  typeof data === 'string'
-    ? data
-    : data?.code ??
-      data?.pairingCode ??
-      data?.pairing_code ??
-      data?.pairCode ??
-      ''
-).toString().trim();
+    const pairingCode = (
+      typeof data === 'string'
+        ? data
+        : data.code ||
+          data.pairingCode ||
+          data.pairing_code ||
+          data.pairCode ||
+          ''
+    ).toString().trim();
 
     if (!pairingCode) {
-      throw new Error(
-        'No pairing code found. Check the backend JSON response.'
-      );
+      throw new Error('No pairing code received from the API.');
     }
 
-    codeElement.textContent = String(pairingCode);
+    codeElement.textContent = pairingCode;
+    messageElement.className = 'message';
     messageElement.textContent =
       'Code generated. Open WhatsApp → Linked Devices → ' +
       'Link a Device → Link with phone number instead.';
 
   } catch (error) {
     console.error('Pairing error:', error);
+
     messageElement.className = 'message error';
-    messageElement.textContent =
-      'Connection failed: ' + error.message;
+
+    if (error instanceof TypeError) {
+      messageElement.textContent =
+        'Connection blocked. Check API availability and CORS settings.';
+    } else {
+      messageElement.textContent = 'Error: ' + error.message;
+    }
   } finally {
     submitBtn.disabled = false;
     submitBtn.textContent = 'GET PAIRING CODE →';
@@ -317,7 +312,6 @@ form.addEventListener('submit', async (event) => {
 
 copyBtn.addEventListener('click', async () => {
   const code = codeElement.textContent.trim();
-
   if (!code) return;
 
   try {
@@ -333,6 +327,7 @@ copyBtn.addEventListener('click', async () => {
   }, 1800);
 });
 </script>
+
 
 </body>
 </html>
