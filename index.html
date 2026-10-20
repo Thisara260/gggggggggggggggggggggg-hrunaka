@@ -227,8 +227,9 @@ button:disabled {
   </p>
 </main>
 
+
 <script>
-const API_URL = 'http://toby.hidencloud.com:24690/code';
+const API_URL = '/api/code';
 
 const form = document.getElementById('pairForm');
 const numberInput = document.getElementById('number');
@@ -243,74 +244,70 @@ form.addEventListener('submit', async (event) => {
 
   const number = numberInput.value.replace(/\D/g, '');
 
-  if (number.length < 8 || number.length > 15) {
+  if (!/^\d{10,15}$/.test(number)) {
     alert('Please enter a valid phone number with country code.');
     return;
   }
 
   result.classList.add('show');
   codeElement.textContent = '';
-  messageElement.textContent = 'Requesting your pairing code...';
   messageElement.className = 'message';
+  messageElement.textContent = 'Connecting to pairing server...';
+
   submitBtn.disabled = true;
   submitBtn.textContent = 'PLEASE WAIT...';
 
   try {
-    const response = await fetch(
-      `${API_URL}?number=${encodeURIComponent(number)}`,
-      {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json, text/plain'
-        }
-      }
-    );
+    const url = new URL(API_URL, window.location.origin);
+    url.searchParams.set('number', number);
+
+    const response = await fetch(url.toString(), {
+      method: 'GET',
+      headers: { Accept: 'application/json' }
+    });
 
     const raw = await response.text();
-
-    if (!response.ok) {
-      throw new Error(`Server returned HTTP ${response.status}: ${raw}`);
-    }
-
     let data;
 
     try {
       data = JSON.parse(raw);
     } catch {
-      data = raw;
+      throw new Error(
+        `Server did not return valid JSON (HTTP ${response.status}).`
+      );
     }
 
-    // Supports common JSON response formats.
-    let pairingCode = '';
-
-    if (typeof data === 'string') {
-      pairingCode = data.trim();
-    } else if (data && typeof data === 'object') {
-      pairingCode =
-        data.code ??
-        data.pairingCode ??
-        data.pairing_code ??
-        data.pairCode ??
-        '';
+    if (!response.ok || data.success === false) {
+      throw new Error(
+        data.error || data.message || `HTTP ${response.status}`
+      );
     }
 
-    if (pairingCode) {
-      codeElement.textContent = String(pairingCode);
-      messageElement.textContent =
-        'Open WhatsApp → Linked Devices → Link a Device → Link with phone number instead, then enter the code if prompted.';
-    } else {
-      messageElement.textContent =
-        'The server responded, but no pairing code was found. Check the backend response format.';
-      messageElement.className = 'message error';
+    const pairingCode =
+      typeof data === 'string'
+        ? data.trim()
+        : data.code ??
+          data.pairingCode ??
+          data.pairing_code ??
+          data.pairCode ??
+          '';
+
+    if (!pairingCode) {
+      throw new Error(
+        'No pairing code found. Check the backend JSON response.'
+      );
     }
+
+    codeElement.textContent = String(pairingCode);
+    messageElement.textContent =
+      'Code generated. Open WhatsApp → Linked Devices → ' +
+      'Link a Device → Link with phone number instead.';
 
   } catch (error) {
-    console.error('Pairing request failed:', error);
-
+    console.error('Pairing error:', error);
     messageElement.className = 'message error';
     messageElement.textContent =
-      'Connection failed. Check your backend, HTTPS, and CORS settings. ' +
-      'Details: ' + error.message;
+      'Connection failed: ' + error.message;
   } finally {
     submitBtn.disabled = false;
     submitBtn.textContent = 'GET PAIRING CODE →';
@@ -327,7 +324,7 @@ copyBtn.addEventListener('click', async () => {
     copyBtn.textContent = 'COPIED ✓';
   } catch {
     messageElement.textContent =
-      'Copy failed. Please select and copy the code manually.';
+      'Copy failed. Select and copy the code manually.';
   }
 
   setTimeout(() => {
@@ -335,5 +332,6 @@ copyBtn.addEventListener('click', async () => {
   }, 1800);
 });
 </script>
+
 </body>
 </html>
