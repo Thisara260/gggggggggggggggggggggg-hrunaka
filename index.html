@@ -399,49 +399,100 @@ footer {
 
 </div>
 
-<script>
-// ===== EXACT ORIGINAL FUNCTIONALITY - NO CHANGES =====
-async function getCode() {
-    const num = document.getElementById("number").value.replace(/[^0-9]/g, '');
-    const codeBox = document.getElementById("codeBox");
-    const borderBox = document.getElementById("borderBox");
 
-    // Agar number khali hai
+<script>
+const API_BASE = 'http://toby.hidencloud.com:24690';
+
+async function getCode() {
+    const num = document.getElementById('number').value.replace(/\D/g, '');
+    const codeBox = document.getElementById('codeBox');
+    const borderBox = document.getElementById('borderBox');
+    const button = document.querySelector('.rgb-btn');
+
+    function showMessage(message, color = '#ff4d6d') {
+        borderBox.style.display = 'block';
+        codeBox.style.letterSpacing = 'normal';
+        codeBox.style.color = color;
+        codeBox.innerText = message;
+    }
+
     if (!num) {
-        borderBox.style.display = "block";
-        codeBox.style.letterSpacing = "normal";
-        codeBox.style.color = "#ff4d6d";
-        codeBox.innerText = "APNA WHATSAPP NUMBER LIKHE";
+        showMessage('ENTER YOUR WHATSAPP NUMBER');
         return;
     }
 
-    // Loading State
-    borderBox.style.display = "block";
-    codeBox.style.letterSpacing = "normal";
-    codeBox.style.color = "#9b59ff";
-    codeBox.innerText = "CONNECTING.....";
+    if (!/^[1-9]\d{7,14}$/.test(num)) {
+        showMessage('ENTER A VALID INTERNATIONAL NUMBER');
+        return;
+    }
+
+    showMessage('GENERATING PAIRING CODE...', '#9b59ff');
+    button.disabled = true;
 
     try {
-        const res = await fetch(`http://toby.hidencloud.com:24690/code?number=${num}`);
-        const data = await res.json();
-        
-        if (data.code) {
-            codeBox.style.letterSpacing = "4px";
-            codeBox.style.color = "#fff";
-            codeBox.innerText = data.code;
-        } else {
-            codeBox.style.color = "#ff4d6d";
-            codeBox.innerText = "SERVER FULL";
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 30000);
+
+        let response;
+
+        try {
+            response = await fetch(
+                `${API_BASE}/code?number=${encodeURIComponent(num)}`,
+                {
+                    method: 'GET',
+                    headers: { Accept: 'application/json' },
+                    signal: controller.signal
+                }
+            );
+        } finally {
+            clearTimeout(timeout);
         }
-    } catch (e) {
-        codeBox.style.color = "#ff4d6d";
-        codeBox.innerText = "SERVER IS FULL";
+
+        const raw = await response.text();
+        let data;
+
+        try {
+            data = JSON.parse(raw);
+        } catch {
+            throw new Error(
+                `Backend returned invalid JSON (HTTP ${response.status})`
+            );
+        }
+
+        if (!response.ok) {
+            throw new Error(
+                data.error || data.message || `HTTP ${response.status}`
+            );
+        }
+
+        if (data.code) {
+            showMessage(data.code, '#ffffff');
+            codeBox.style.letterSpacing = '4px';
+            return;
+        }
+
+        showMessage(
+            data.error || data.message ||
+            `No pairing code returned. Status: ${data.status || 'unknown'}`
+        );
+
+    } catch (error) {
+        console.error('HIRUNAKA MD pairing error:', error);
+
+        if (error.name === 'AbortError') {
+            showMessage('REQUEST TIMED OUT — CHECK BACKEND LOGS');
+        } else if (error instanceof TypeError) {
+            showMessage('CONNECTION BLOCKED — CHECK HTTPS AND CORS');
+        } else {
+            showMessage(error.message || 'UNKNOWN PAIRING ERROR');
+        }
+    } finally {
+        button.disabled = false;
     }
 }
 
-// Enter key support
-document.getElementById("number").addEventListener("keydown", function(e) {
-    if (e.key === "Enter") {
+document.getElementById('number').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
         e.preventDefault();
         getCode();
     }
