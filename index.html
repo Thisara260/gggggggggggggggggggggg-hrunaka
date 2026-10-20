@@ -283,14 +283,15 @@ form.addEventListener('submit', async (event) => {
       );
     }
 
-    const pairingCode =
-      typeof data === 'string'
-        ? data.trim()
-        : data.code ??
-          data.pairingCode ??
-          data.pairing_code ??
-          data.pairCode ??
-          '';
+   const pairingCode = (
+  typeof data === 'string'
+    ? data
+    : data?.code ??
+      data?.pairingCode ??
+      data?.pairing_code ??
+      data?.pairCode ??
+      ''
+).toString().trim();
 
     if (!pairingCode) {
       throw new Error(
