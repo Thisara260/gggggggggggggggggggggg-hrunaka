@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,13 +27,13 @@ body {
   color: #f4f7ff;
   font-family: 'Poppins', sans-serif;
 }
-    .logo-img {
+
+.logo-img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: contain;
 }
-
   
 .container {
   width: 100%;
@@ -234,20 +233,12 @@ button:disabled {
   </p>
 </main>
 
-
-
 <script>
-const API_URL = 'https://hirunaka-Hirunaka MD-mini-bot.vercel.app/api/code';
-
 const form = document.getElementById('pairForm');
 const numberInput = document.getElementById('number');
 const submitBtn = document.getElementById('submitBtn');
-const result = document.getElementById('result');
-const codeElement = document.getElementById('code');
-const messageElement = document.getElementById('message');
-const copyBtn = document.getElementById('copyBtn');
 
-form.addEventListener('submit', async (event) => {
+form.addEventListener('submit', (event) => {
   event.preventDefault();
 
   const number = numberInput.value.replace(/\D/g, '');
@@ -257,84 +248,13 @@ form.addEventListener('submit', async (event) => {
     return;
   }
 
-  result.classList.add('show');
-  codeElement.textContent = '';
-  messageElement.className = 'message';
-  messageElement.textContent = 'Connecting to pairing server...';
-
   submitBtn.disabled = true;
-  submitBtn.textContent = 'PLEASE WAIT...';
+  submitBtn.textContent = 'REDIRECTING...';
 
-  try {
-    const url = new URL(API_URL);
-    url.searchParams.set('number', number);
-
-    const response = await fetch(url.toString(), {
-      method: 'GET',
-      headers: { Accept: 'application/json' }
-    });
-
-    const data = await response.json();
-
-    if (!response.ok || data.success === false || data.error) {
-      throw new Error(data.error || data.message || `HTTP ${response.status}`);
-    }
-
-    const pairingCode = (
-      typeof data === 'string'
-        ? data
-        : data.code ||
-          data.pairingCode ||
-          data.pairing_code ||
-          data.pairCode ||
-          ''
-    ).toString().trim();
-
-    if (!pairingCode) {
-      throw new Error('No pairing code received from the API.');
-    }
-
-    codeElement.textContent = pairingCode;
-    messageElement.className = 'message';
-    messageElement.textContent =
-      'Code generated. Open WhatsApp → Linked Devices → ' +
-      'Link a Device → Link with phone number instead.';
-
-  } catch (error) {
-    console.error('Pairing error:', error);
-
-    messageElement.className = 'message error';
-
-    if (error instanceof TypeError) {
-      messageElement.textContent =
-        'Connection blocked. Check API availability and CORS settings.';
-    } else {
-      messageElement.textContent = 'Error: ' + error.message;
-    }
-  } finally {
-    submitBtn.disabled = false;
-    submitBtn.textContent = 'GET PAIRING CODE →';
-  }
-});
-
-copyBtn.addEventListener('click', async () => {
-  const code = codeElement.textContent.trim();
-  if (!code) return;
-
-  try {
-    await navigator.clipboard.writeText(code);
-    copyBtn.textContent = 'COPIED ✓';
-  } catch {
-    messageElement.textContent =
-      'Copy failed. Select and copy the code manually.';
-  }
-
-  setTimeout(() => {
-    copyBtn.textContent = 'COPY CODE';
-  }, 1800);
+  // Redirects directly to the API URL with the number parameter
+  window.location.href = `https://hirunaka-md-mini-bot.vercel.app/api/code?number=${number}`;
 });
 </script>
-
 
 </body>
 </html>
