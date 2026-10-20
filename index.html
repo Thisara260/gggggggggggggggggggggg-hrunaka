@@ -1,503 +1,340 @@
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>👑 HIRUNAKA MD 👑</title>
+<meta name="theme-color" content="#080b14">
+<title>MD BOT — Pair Device</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-/* ===============================
-   ORIGINAL STRUCTURE - UPGRADED VISUALS
-   =============================== */
-
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-:root {
-    --rgb-speed: 16s;
-    --glass-bg: rgba(0, 0, 0, 0.85);
-    --border-glow: rgba(255, 255, 255, 0.08);
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Poppins', sans-serif;
-    background: #0a0a0f;
-    color: #fff;
-    padding: 20px;
-    background-image: 
-        radial-gradient(ellipse at 20% 50%, rgba(120, 80, 255, 0.05) 0%, transparent 60%),
-        radial-gradient(ellipse at 80% 50%, rgba(255, 80, 120, 0.05) 0%, transparent 60%);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background:
+    radial-gradient(ellipse at top, #102844 0%, transparent 55%),
+    #080b14;
+  color: #f4f7ff;
+  font-family: 'Poppins', sans-serif;
 }
 
-/* Card */
-.card {
-    width: 90%;
-    max-width: 420px;
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-radius: 28px;
-    padding: 32px 24px 28px;
-    text-align: center;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    box-shadow: 
-        0 30px 80px rgba(0, 0, 0, 0.8),
-        inset 0 1px 0 rgba(255, 255, 255, 0.04);
-    transition: all 0.3s;
+.container {
+  width: 100%;
+  max-width: 440px;
+  padding: 32px 25px;
+  border: 1px solid #263b59;
+  border-radius: 24px;
+  background: rgba(13, 20, 35, 0.96);
+  box-shadow: 0 20px 70px #0008;
 }
 
-/* Rainbow Text Animation */
-@keyframes rgbText {
-    0% { background-position: 0% 50%; }
-    100% { background-position: 400% 50%; }
+.logo {
+  width: 76px;
+  height: 76px;
+  margin: 0 auto 18px;
+  display: grid;
+  place-items: center;
+  border-radius: 22px;
+  background: linear-gradient(135deg, #53e7ff, #7785ff);
+  color: #07101c;
+  font-size: 25px;
+  font-weight: 800;
+  box-shadow: 0 0 35px #53e7ff30;
 }
 
-.rgb-text {
-    background: linear-gradient(90deg, 
-        #ff4d6d, #ff8a4d, #ffd93d, #6bcb77, #4d96ff, #9b59ff, #ff4d6d
-    );
-    background-size: 400% 100%;
-    animation: rgbText var(--rgb-speed) linear infinite;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-/* Titles */
 h1 {
-    font-size: 2rem;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    margin-bottom: 2px;
+  text-align: center;
+  font-size: 27px;
+  font-weight: 800;
 }
 
-h1:last-of-type {
-    font-size: 1.6rem;
-    margin-bottom: 4px;
+.subtitle {
+  margin: 8px 0 27px;
+  text-align: center;
+  color: #99a9c2;
+  font-size: 13px;
+  line-height: 1.7;
 }
 
-/* Status */
-.status {
-    font-size: 0.75rem;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    opacity: 0.8;
-    margin: 6px 0 16px 0;
-    font-weight: 500;
-}
-
-/* ===== INPUT & BUTTON ===== */
-/* EXACT SAME STRUCTURE AS ORIGINAL */
-.input-wrap {
-    background: transparent;
-    border-radius: 16px;
-    padding: 0;
-    margin-bottom: 14px;
+label {
+  display: block;
+  margin-bottom: 9px;
+  color: #dbe7f9;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 input {
-    width: 100%;
-    border: 2px solid rgba(255, 255, 255, 0.08);
-    outline: none;
-    padding: 16px;
-    border-radius: 16px;
-    background: rgba(255, 255, 255, 0.03);
-    color: #fff;
-    text-align: center;
-    font-size: 1.05rem;
-    font-family: 'Poppins', sans-serif;
-    transition: all 0.3s;
-    backdrop-filter: blur(10px);
+  width: 100%;
+  padding: 15px;
+  outline: none;
+  border: 1px solid #30435f;
+  border-radius: 12px;
+  background: #080e1a;
+  color: white;
+  font: inherit;
+  font-size: 14px;
+  transition: border .2s;
 }
 
 input:focus {
-    border-color: rgba(255, 100, 200, 0.4);
-    box-shadow: 0 0 30px rgba(155, 89, 255, 0.08);
-    background: rgba(255, 255, 255, 0.05);
+  border-color: #53e7ff;
+  box-shadow: 0 0 0 3px #53e7ff12;
 }
 
-input::placeholder {
-    color: #555;
+.hint {
+  margin: 9px 0 20px;
+  color: #8394ae;
+  font-size: 11px;
 }
 
 button {
-    width: 100%;
-    border: none;
-    border-radius: 16px;
-    padding: 16px;
-    font-size: 1.05rem;
-    font-weight: 600;
-    cursor: pointer;
-    background: linear-gradient(135deg, rgba(255, 77, 109, 0.15), rgba(155, 89, 255, 0.15));
-    color: #fff;
-    transition: all 0.3s;
-    border: 2px solid rgba(255, 255, 255, 0.08);
-    letter-spacing: 0.5px;
-    backdrop-filter: blur(10px);
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(110deg, #53e7ff, #7785ff);
+  color: #07101c;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform .2s, opacity .2s;
 }
 
 button:hover {
-    background: linear-gradient(135deg, rgba(255, 77, 109, 0.25), rgba(155, 89, 255, 0.25));
-    border-color: rgba(255, 100, 200, 0.3);
-    transform: translateY(-2px);
-    box-shadow: 0 10px 30px rgba(155, 89, 255, 0.15);
+  transform: translateY(-2px);
 }
 
-button:active {
-    transform: translateY(0px);
+button:disabled {
+  cursor: wait;
+  opacity: .6;
+  transform: none;
 }
 
-/* ===== RESULT BOX ===== */
-#result {
-    margin-top: 20px;
-    min-height: 60px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
+.result {
+  display: none;
+  margin-top: 22px;
+  padding: 19px;
+  border: 1px solid #254a56;
+  border-radius: 14px;
+  background: #0a1922;
+  text-align: center;
 }
 
-.code-display {
-    padding: 14px 24px;
-    border-radius: 16px;
-    border: 2px dashed rgba(255, 255, 255, 0.08);
-    letter-spacing: 6px;
-    cursor: pointer;
-    background: rgba(255, 255, 255, 0.02);
-    font-size: 1.2rem;
-    font-weight: 600;
-    transition: all 0.3s;
-    width: 100%;
-    min-height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(10px);
+.result.show {
+  display: block;
 }
 
-.code-display:hover {
-    border-color: rgba(155, 89, 255, 0.3);
-    background: rgba(255, 255, 255, 0.04);
+.result-title {
+  margin-bottom: 12px;
+  color: #a6b9d2;
+  font-size: 12px;
 }
 
-/* Loader */
-.loader {
-    width: 32px;
-    height: 32px;
-    border: 3px solid rgba(255, 255, 255, 0.05);
-    border-top: 3px solid #9b59ff;
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+.code {
+  overflow-wrap: anywhere;
+  color: #53e7ff;
+  font-size: 25px;
+  font-weight: 800;
+  letter-spacing: 3px;
 }
 
-@keyframes spin {
-    to { transform: rotate(360deg); }
+.copy {
+  margin-top: 15px;
+  padding: 11px;
+  background: #152c3b;
+  color: #53e7ff;
+  border: 1px solid #2c5266;
 }
 
-/* Footer */
-footer {
-    margin-top: 22px;
-    font-size: 0.7rem;
-    color: #444;
-    letter-spacing: 0.5px;
-    border-top: 1px solid rgba(255, 255, 255, 0.04);
-    padding-top: 18px;
+.message {
+  margin-top: 15px;
+  color: #9eb0c8;
+  font-size: 12px;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
 }
 
-/* ===== RGB BORDER (FOR INPUT & BUTTON) ===== */
-@keyframes rgbMove {
-    0% { background-position: 0% 50%; }
-    100% { background-position: 300% 50%; }
+.message.error {
+  color: #ff929b;
 }
 
-/* Input Box with RGB Border */
-.rgb-box {
-    padding: 3px;
-    border-radius: 18px;
-    background: linear-gradient(90deg, #ff4d6d, #ff8a4d, #ffd93d, #6bcb77, #4d96ff, #9b59ff, #ff4d6d);
-    background-size: 300% 100%;
-    animation: rgbMove 4s linear infinite;
-    width: 100%;
-    max-width: 340px;
-    margin: 0 auto 16px auto;
-    transition: all 0.3s;
-    box-shadow: 0 0 30px rgba(155, 89, 255, 0.05);
+.footer {
+  margin-top: 25px;
+  text-align: center;
+  color: #71829b;
+  font-size: 11px;
 }
 
-.rgb-box input {
-    width: 100%;
-    border: none;
-    outline: none;
-    padding: 16px;
-    border-radius: 16px;
-    background: #0a0a0f;
-    color: #fff;
-    text-align: center;
-    font-size: 1.05rem;
-    font-family: 'Poppins', sans-serif;
-}
-
-.rgb-box input::placeholder {
-    color: #555;
-}
-
-/* Button with RGB Border */
-.rgb-btn {
-    width: 100%;
-    max-width: 340px;
-    padding: 3px;
-    border-radius: 18px;
-    background: linear-gradient(90deg, #ff4d6d, #ff8a4d, #ffd93d, #6bcb77, #4d96ff, #9b59ff, #ff4d6d);
-    background-size: 300% 100%;
-    animation: rgbMove 4s linear infinite;
-    border: none;
-    cursor: pointer;
-    display: block;
-    margin: 0 auto;
-    transition: all 0.3s;
-}
-
-.btn-inner {
-    background: #0a0a0f;
-    color: #fff;
-    display: block;
-    padding: 14px;
-    border-radius: 16px;
-    font-weight: 700;
-    font-size: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: all 0.3s;
-}
-
-.rgb-btn:hover {
-    transform: scale(1.02);
-    box-shadow: 0 10px 40px rgba(155, 89, 255, 0.2);
-}
-
-.rgb-btn:hover .btn-inner {
-    background: #111118;
-}
-
-/* Result Box with RGB Border */
-.result-box {
-    width: 100%;
-    max-width: 340px;
-    margin: 16px auto 0;
-    padding: 3px;
-    border-radius: 18px;
-    background: linear-gradient(90deg, #ff4d6d, #ff8a4d, #ffd93d, #6bcb77, #4d96ff, #9b59ff, #ff4d6d);
-    background-size: 300% 100%;
-    animation: rgbMove 5s linear infinite;
-    display: none;
-    box-shadow: 0 0 40px rgba(155, 89, 255, 0.05);
-}
-
-.result-inner {
-    background: #0a0a0f;
-    border-radius: 16px;
-    padding: 16px;
-    min-height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    font-size: 1.1rem;
-    font-weight: 600;
-    text-align: center;
-}
-
-#codeBox {
-    letter-spacing: 4px;
-    color: #fff;
-    cursor: default;
-}
-
-/* Small decorative elements */
-.divider {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    margin: 4px 0 10px 0;
-    opacity: 0.3;
-}
-
-.divider span {
-    width: 30px;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-}
-
-.badge-group {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 4px;
-}
-
-.badge {
-    padding: 4px 14px;
-    border-radius: 30px;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    font-size: 0.6rem;
-    letter-spacing: 0.5px;
-    color: #888;
-    font-weight: 500;
-}
-
-@media (max-width: 480px) {
-    .card { padding: 24px 16px; }
-    h1 { font-size: 1.7rem; }
-    h1:last-of-type { font-size: 1.4rem; }
+.footer span {
+  color: #53e7ff;
 }
 </style>
 </head>
+
 <body>
+<main class="container">
+  <div class="logo">MD</div>
 
-<div class="card">
+  <h1>Pair Your Device</h1>
+  <p class="subtitle">
+    Connect your WhatsApp account to your MD Bot
+    using a pairing code.
+  </p>
 
-<h1 class="rgb-text">👑 HIRUNAKA MD 👑</h1>
-<h1 class="rgb-text">PAIR CODE</h1>
+  <form id="pairForm">
+    <label for="number">WhatsApp Number</label>
+    <input
+      id="number"
+      type="tel"
+      placeholder="947XXXXXXXX"
+      autocomplete="tel"
+      inputmode="numeric"
+      required
+    >
+    <p class="hint">
+      Include your country code. Do not use +, spaces, or dashes.
+    </p>
 
-<p class="status rgb-text">TYPE YOUR WHATSAPP NUMBER</p>
+    <button id="submitBtn" type="submit">
+      GET PAIRING CODE →
+    </button>
+  </form>
 
-<!-- Input with RGB Border -->
-<div class="rgb-box">
-    <input type="text" id="number" placeholder="94709xxxx">
-</div>
+  <section id="result" class="result" aria-live="polite">
+    <p class="result-title">YOUR PAIRING CODE</p>
+    <div id="code" class="code"></div>
+    <button id="copyBtn" class="copy" type="button">
+      COPY CODE
+    </button>
+    <p id="message" class="message"></p>
+  </section>
 
-<!-- Button with RGB Border -->
-<button class="rgb-btn" onclick="getCode()">
-    <span class="btn-inner">GET PAIR CODE</span>
-</button>
-
-<!-- Result Box with RGB Border -->
-<div class="result-box" id="borderBox">
-    <div class="result-inner" id="codeBox">----</div>
-</div>
-
-<!-- Footer Badges -->
-<div class="badge-group">
-    <span class="badge">🤖 WHATSAPP BOT</span>
-    <span class="badge">⚡ HIRUNAKA-MD</span>
-    <span class="badge">✨ 2026</span>
-</div>
-
-<p class="status rgb-text" style="margin-top: 10px; font-size: 0.6rem;">MADE BY ＧIᗰ𝛥𝛥 · MINI BOT EDITION</p>
-
-</div>
-
+  <p class="footer">
+    Powered by <span>MD BOT</span> · Device Connection
+  </p>
+</main>
 
 <script>
-const API_BASE = 'http://toby.hidencloud.com:24690';
+const API_URL = 'http://toby.hidencloud.com:24690/code';
 
-async function getCode() {
-    const num = document.getElementById('number').value.replace(/\D/g, '');
-    const codeBox = document.getElementById('codeBox');
-    const borderBox = document.getElementById('borderBox');
-    const button = document.querySelector('.rgb-btn');
+const form = document.getElementById('pairForm');
+const numberInput = document.getElementById('number');
+const submitBtn = document.getElementById('submitBtn');
+const result = document.getElementById('result');
+const codeElement = document.getElementById('code');
+const messageElement = document.getElementById('message');
+const copyBtn = document.getElementById('copyBtn');
 
-    function showMessage(message, color = '#ff4d6d') {
-        borderBox.style.display = 'block';
-        codeBox.style.letterSpacing = 'normal';
-        codeBox.style.color = color;
-        codeBox.innerText = message;
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  const number = numberInput.value.replace(/\D/g, '');
+
+  if (number.length < 8 || number.length > 15) {
+    alert('Please enter a valid phone number with country code.');
+    return;
+  }
+
+  result.classList.add('show');
+  codeElement.textContent = '';
+  messageElement.textContent = 'Requesting your pairing code...';
+  messageElement.className = 'message';
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'PLEASE WAIT...';
+
+  try {
+    const response = await fetch(
+      `${API_URL}?number=${encodeURIComponent(number)}`,
+      {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json, text/plain'
+        }
+      }
+    );
+
+    const raw = await response.text();
+
+    if (!response.ok) {
+      throw new Error(`Server returned HTTP ${response.status}: ${raw}`);
     }
 
-    if (!num) {
-        showMessage('ENTER YOUR WHATSAPP NUMBER');
-        return;
-    }
-
-    if (!/^[1-9]\d{7,14}$/.test(num)) {
-        showMessage('ENTER A VALID INTERNATIONAL NUMBER');
-        return;
-    }
-
-    showMessage('GENERATING PAIRING CODE...', '#9b59ff');
-    button.disabled = true;
+    let data;
 
     try {
-        const controller = new AbortController();
-        const timeout = setTimeout(() => controller.abort(), 30000);
-
-        let response;
-
-        try {
-            response = await fetch(
-                `${API_BASE}/code?number=${encodeURIComponent(num)}`,
-                {
-                    method: 'GET',
-                    headers: { Accept: 'application/json' },
-                    signal: controller.signal
-                }
-            );
-        } finally {
-            clearTimeout(timeout);
-        }
-
-        const raw = await response.text();
-        let data;
-
-        try {
-            data = JSON.parse(raw);
-        } catch {
-            throw new Error(
-                `Backend returned invalid JSON (HTTP ${response.status})`
-            );
-        }
-
-        if (!response.ok) {
-            throw new Error(
-                data.error || data.message || `HTTP ${response.status}`
-            );
-        }
-
-        if (data.code) {
-            showMessage(data.code, '#ffffff');
-            codeBox.style.letterSpacing = '4px';
-            return;
-        }
-
-        showMessage(
-            data.error || data.message ||
-            `No pairing code returned. Status: ${data.status || 'unknown'}`
-        );
-
-    } catch (error) {
-        console.error('HIRUNAKA MD pairing error:', error);
-
-        if (error.name === 'AbortError') {
-            showMessage('REQUEST TIMED OUT — CHECK BACKEND LOGS');
-        } else if (error instanceof TypeError) {
-            showMessage('CONNECTION BLOCKED — CHECK HTTPS AND CORS');
-        } else {
-            showMessage(error.message || 'UNKNOWN PAIRING ERROR');
-        }
-    } finally {
-        button.disabled = false;
+      data = JSON.parse(raw);
+    } catch {
+      data = raw;
     }
-}
 
-document.getElementById('number').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter') {
-        e.preventDefault();
-        getCode();
+    // Supports common JSON response formats.
+    let pairingCode = '';
+
+    if (typeof data === 'string') {
+      pairingCode = data.trim();
+    } else if (data && typeof data === 'object') {
+      pairingCode =
+        data.code ??
+        data.pairingCode ??
+        data.pairing_code ??
+        data.pairCode ??
+        '';
     }
+
+    if (pairingCode) {
+      codeElement.textContent = String(pairingCode);
+      messageElement.textContent =
+        'Open WhatsApp → Linked Devices → Link a Device → Link with phone number instead, then enter the code if prompted.';
+    } else {
+      messageElement.textContent =
+        'The server responded, but no pairing code was found. Check the backend response format.';
+      messageElement.className = 'message error';
+    }
+
+  } catch (error) {
+    console.error('Pairing request failed:', error);
+
+    messageElement.className = 'message error';
+    messageElement.textContent =
+      'Connection failed. Check your backend, HTTPS, and CORS settings. ' +
+      'Details: ' + error.message;
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'GET PAIRING CODE →';
+  }
+});
+
+copyBtn.addEventListener('click', async () => {
+  const code = codeElement.textContent.trim();
+
+  if (!code) return;
+
+  try {
+    await navigator.clipboard.writeText(code);
+    copyBtn.textContent = 'COPIED ✓';
+  } catch {
+    messageElement.textContent =
+      'Copy failed. Please select and copy the code manually.';
+  }
+
+  setTimeout(() => {
+    copyBtn.textContent = 'COPY CODE';
+  }, 1800);
 });
 </script>
-
 </body>
 </html>
+```
