@@ -1,0 +1,617 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080910">
+<title>HIRUNAKA MD — Premium Pairing</title>
+<meta name="description" content="Connect your WhatsApp to HIRUNAKA MD with a premium pairing experience.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --bg: #080910;
+    --panel: rgba(17, 19, 34, .78);
+    --text: #f7f7ff;
+    --muted: #85899f;
+    --purple: #a78bfa;
+    --cyan: #62e7ff;
+    --pink: #fa72d7;
+    --line: rgba(255,255,255,.09);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    overflow-x: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 28px 16px;
+    position: relative;
+}
+
+body::before,
+body::after {
+    content: "";
+    position: fixed;
+    width: 420px;
+    height: 420px;
+    border-radius: 50%;
+    filter: blur(110px);
+    opacity: .17;
+    pointer-events: none;
+    z-index: -1;
+}
+
+body::before {
+    background: #753bff;
+    top: -180px;
+    left: -160px;
+}
+
+body::after {
+    background: #00d9ff;
+    bottom: -200px;
+    right: -140px;
+}
+
+.grid-bg {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    opacity: .18;
+    background-image:
+        linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px);
+    background-size: 42px 42px;
+    mask-image: linear-gradient(to bottom, black, transparent 90%);
+}
+
+.wrapper {
+    width: 100%;
+    max-width: 430px;
+    animation: appear .7s ease both;
+}
+
+@keyframes appear {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 22px;
+    padding: 0 4px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 1.3px;
+}
+
+.brand-icon {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    border: 1px solid rgba(167,139,250,.3);
+    background: linear-gradient(135deg, rgba(167,139,250,.16), rgba(98,231,255,.08));
+    border-radius: 13px;
+    font-size: 19px;
+    box-shadow: 0 0 25px rgba(167,139,250,.08);
+}
+
+.online {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #a7f3d0;
+    background: rgba(52,211,153,.07);
+    border: 1px solid rgba(52,211,153,.16);
+    padding: 8px 11px;
+    border-radius: 30px;
+    font-size: 10px;
+    letter-spacing: .8px;
+    font-weight: 700;
+}
+
+.online-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #34d399;
+    box-shadow: 0 0 10px #34d399;
+}
+
+.card {
+    position: relative;
+    overflow: hidden;
+    padding: 34px 25px 24px;
+    border-radius: 28px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    box-shadow:
+        0 30px 100px rgba(0,0,0,.45),
+        inset 0 1px 0 rgba(255,255,255,.045);
+}
+
+.card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 15%;
+    width: 70%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--purple), var(--cyan), transparent);
+    opacity: .8;
+}
+
+.hero-icon {
+    width: 76px;
+    height: 76px;
+    border-radius: 24px;
+    margin: 0 auto 23px;
+    display: grid;
+    place-items: center;
+    font-size: 34px;
+    position: relative;
+    background: linear-gradient(145deg, rgba(167,139,250,.18), rgba(98,231,255,.06));
+    border: 1px solid rgba(167,139,250,.27);
+    box-shadow: 0 0 45px rgba(167,139,250,.10);
+}
+
+.hero-icon::after {
+    content: "";
+    position: absolute;
+    inset: -6px;
+    border-radius: 29px;
+    border: 1px solid rgba(167,139,250,.10);
+}
+
+.eyebrow {
+    color: var(--cyan);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    text-align: center;
+    margin-bottom: 11px;
+}
+
+h1 {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(27px, 7vw, 34px);
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: -1.2px;
+    line-height: 1.2;
+}
+
+.gradient-text {
+    background: linear-gradient(100deg, #fff 5%, #c4b5fd 46%, #67e8f9 95%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+.subtitle {
+    color: var(--muted);
+    font-size: 12px;
+    text-align: center;
+    line-height: 1.8;
+    max-width: 290px;
+    margin: 13px auto 28px;
+}
+
+.form-label {
+    display: block;
+    color: #d9d9e8;
+    font-size: 11px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    letter-spacing: .5px;
+}
+
+.input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid rgba(255,255,255,.1);
+    background: rgba(4,5,12,.7);
+    border-radius: 15px;
+    padding: 0 15px;
+    transition: .25s ease;
+}
+
+.input-wrap:focus-within {
+    border-color: rgba(167,139,250,.7);
+    box-shadow: 0 0 0 4px rgba(167,139,250,.08);
+}
+
+.phone-icon {
+    color: #a78bfa;
+    font-size: 18px;
+}
+
+input {
+    width: 100%;
+    min-width: 0;
+    padding: 17px 0;
+    background: transparent;
+    color: white;
+    border: none;
+    outline: none;
+    font: 500 14px 'Inter', sans-serif;
+    letter-spacing: .3px;
+}
+
+input::placeholder {
+    color: #575b70;
+}
+
+.hint {
+    color: #686d82;
+    font-size: 10px;
+    margin: 9px 0 21px 2px;
+    line-height: 1.6;
+}
+
+.submit-btn {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border: 1px solid rgba(255,255,255,.16);
+    border-radius: 15px;
+    padding: 17px 16px;
+    color: #090a13;
+    background: linear-gradient(105deg, #c4b5fd, #8b9cff 52%, #67e8f9);
+    font: 800 12px 'Inter', sans-serif;
+    letter-spacing: 1.1px;
+    cursor: pointer;
+    transition: transform .2s, box-shadow .2s, opacity .2s;
+    box-shadow: 0 9px 30px rgba(139,156,255,.15);
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 13px 36px rgba(139,156,255,.24);
+}
+
+.submit-btn:active {
+    transform: scale(.99);
+}
+
+.submit-btn:disabled {
+    opacity: .65;
+    cursor: wait;
+    transform: none;
+}
+
+.arrow {
+    font-size: 17px;
+    line-height: 10px;
+}
+
+.result-box {
+    display: none;
+    margin-top: 20px;
+    padding: 17px;
+    text-align: center;
+    border-radius: 17px;
+    border: 1px solid rgba(167,139,250,.22);
+    background: linear-gradient(145deg, rgba(167,139,250,.07), rgba(98,231,255,.035));
+    animation: appear .3s ease both;
+}
+
+.result-label {
+    color: #9b9eb3;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+}
+
+#codeBox {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 25px;
+    font-weight: 700;
+    letter-spacing: 5px;
+    color: #fff;
+    overflow-wrap: anywhere;
+}
+
+#message {
+    color: #85899f;
+    font-size: 10px;
+    line-height: 1.6;
+    margin-top: 10px;
+}
+
+.copy-btn {
+    display: none;
+    margin: 13px auto 0;
+    padding: 9px 14px;
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 10px;
+    color: #dedafc;
+    background: rgba(255,255,255,.045);
+    font: 600 10px 'Inter', sans-serif;
+    cursor: pointer;
+}
+
+.copy-btn:hover {
+    background: rgba(255,255,255,.09);
+}
+
+.features {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-top: 23px;
+}
+
+.feature {
+    text-align: center;
+    padding: 12px 5px;
+    background: rgba(255,255,255,.025);
+    border: 1px solid rgba(255,255,255,.055);
+    border-radius: 13px;
+}
+
+.feature-icon {
+    font-size: 15px;
+    margin-bottom: 7px;
+}
+
+.feature-title {
+    font-size: 9px;
+    font-weight: 700;
+    color: #c5c7d7;
+}
+
+.feature-desc {
+    font-size: 8px;
+    color: #73778c;
+    margin-top: 4px;
+}
+
+.footer {
+    margin-top: 21px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    color: #62667a;
+    font-size: 9px;
+}
+
+.footer strong {
+    color: #b3b4c7;
+    font-weight: 700;
+}
+
+.footer-line {
+    height: 1px;
+    background: var(--line);
+    margin-bottom: 15px;
+}
+
+@media (max-width: 380px) {
+    .card { padding: 28px 18px 21px; }
+    .features { gap: 5px; }
+    .feature-title { font-size: 8px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+    }
+}
+</style>
+</head>
+
+<body>
+<div class="grid-bg"></div>
+
+<main class="wrapper">
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-icon">👑</div>
+            <span>HIRUNAKA <span style="color:#a78bfa">MD</span></span>
+        </div>
+        <div class="online">
+            <span class="online-dot"></span>
+            PAIRING PORTAL
+        </div>
+    </header>
+
+    <section class="card">
+        <div class="hero-icon">⚡</div>
+
+        <p class="eyebrow">NEXT-GEN WHATSAPP BOT</p>
+        <h1 class="gradient-text">Connect Your<br>WhatsApp</h1>
+        <p class="subtitle">
+            A smarter way to connect. Enter your WhatsApp number
+            to generate your secure pairing code.
+        </p>
+
+        <form id="pairForm">
+            <label class="form-label" for="number">WHATSAPP PHONE NUMBER</label>
+
+            <div class="input-wrap">
+                <span class="phone-icon">＋</span>
+                <input
+                    type="tel"
+                    id="number"
+                    name="number"
+                    placeholder="947XXXXXXXX"
+                    autocomplete="tel"
+                    inputmode="numeric"
+                    maxlength="16"
+                    required
+                >
+            </div>
+
+            <p class="hint">Include your country code. Do not include the + symbol.</p>
+
+            <button class="submit-btn" id="pairButton" type="submit">
+                <span id="buttonText">GENERATE PAIRING CODE</span>
+                <span class="arrow">↗</span>
+            </button>
+        </form>
+
+        <div class="result-box" id="borderBox" aria-live="polite">
+            <p class="result-label" id="resultLabel">YOUR PAIRING CODE</p>
+            <div id="codeBox">--------</div>
+            <p id="message">Enter the code in WhatsApp's Linked Devices section.</p>
+            <button class="copy-btn" id="copyButton" type="button">COPY PAIRING CODE</button>
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">🔐</div>
+                <div class="feature-title">PRIVATE</div>
+                <div class="feature-desc">Your device</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">⚡</div>
+                <div class="feature-title">FAST</div>
+                <div class="feature-desc">Quick pairing</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">✦</div>
+                <div class="feature-title">PREMIUM</div>
+                <div class="feature-desc">HIRUNAKA MD</div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <span>POWERED BY <strong>HIRUNAKA MD</strong></span>
+            <span>© 2026 · <strong>GIMAA</strong></span>
+        </footer>
+    </section>
+</main>
+
+<script>
+/*
+ * Set this to your actual HTTPS backend URL once configured.
+ * The HTTP HidenCloud URL may be blocked when this page runs on Vercel.
+ */
+const API_BASE = 'http://toby.hidencloud.com:24690';
+
+const form = document.getElementById('pairForm');
+const numberInput = document.getElementById('number');
+const borderBox = document.getElementById('borderBox');
+const codeBox = document.getElementById('codeBox');
+const message = document.getElementById('message');
+const resultLabel = document.getElementById('resultLabel');
+const pairButton = document.getElementById('pairButton');
+const buttonText = document.getElementById('buttonText');
+const copyButton = document.getElementById('copyButton');
+
+function showError(text) {
+    borderBox.style.display = 'block';
+    resultLabel.textContent = 'PAIRING FAILED';
+    codeBox.style.color = '#fb7185';
+    codeBox.style.letterSpacing = 'normal';
+    codeBox.style.fontSize = '14px';
+    codeBox.textContent = text;
+    message.textContent = 'Check the backend connection and try again.';
+    copyButton.style.display = 'none';
+}
+
+form.addEventListener('submit', async function (event) {
+    event.preventDefault();
+
+    const number = numberInput.value.replace(/\D/g, '');
+
+    if (!/^[1-9]\d{7,14}$/.test(number)) {
+        showError('ENTER A VALID PHONE NUMBER');
+        return;
+    }
+
+    borderBox.style.display = 'block';
+    resultLabel.textContent = 'CONNECTING TO SERVER';
+    codeBox.style.color = '#c4b5fd';
+    codeBox.style.letterSpacing = '1px';
+    codeBox.style.fontSize = '14px';
+    codeBox.textContent = 'GENERATING CODE...';
+    message.textContent = 'Please wait while the server processes your request.';
+    copyButton.style.display = 'none';
+    pairButton.disabled = true;
+    buttonText.textContent = 'PLEASE WAIT...';
+
+    try {
+        const response = await fetch(
+            `${API_BASE}/code?number=${encodeURIComponent(number)}`,
+            { method: 'GET', headers: { Accept: 'application/json' } }
+        );
+
+        const data = await response.json().catch(() => ({}));
+
+        if (!response.ok) {
+            throw new Error(data.error || data.message || 'REQUEST FAILED');
+        }
+
+        if (!data.code) {
+            throw new Error(data.error || data.message || 'NO PAIRING CODE RECEIVED');
+        }
+
+        resultLabel.textContent = 'YOUR PAIRING CODE';
+        codeBox.style.color = '#ffffff';
+        codeBox.style.letterSpacing = '5px';
+        codeBox.style.fontSize = '25px';
+        codeBox.textContent = data.code;
+        message.textContent = 'Open WhatsApp → Linked Devices → Link a Device → Link with phone number.';
+        copyButton.style.display = 'inline-block';
+    } catch (error) {
+        console.error('Pairing request failed:', error);
+        showError(error.message === 'Failed to fetch'
+            ? 'BACKEND CONNECTION UNAVAILABLE'
+            : error.message || 'UNABLE TO GENERATE CODE');
+    } finally {
+        pairButton.disabled = false;
+        buttonText.textContent = 'GENERATE PAIRING CODE';
+    }
+});
+
+copyButton.addEventListener('click', async function () {
+    try {
+        await navigator.clipboard.writeText(codeBox.textContent);
+        copyButton.textContent = '✓ COPIED';
+        setTimeout(() => {
+            copyButton.textContent = 'COPY PAIRING CODE';
+        }, 1600);
+    } catch {
+        message.textContent = 'Copy is unavailable. Please select the code manually.';
+    }
+});
+</script>
+</body>
+</html>
+```
