@@ -1,10 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#080b14">
-<title>Hirunaka MD BOT — Pair Device</title>
+<title>Hirunaka-MD BOT — Pair Device</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
@@ -15,6 +16,12 @@
   padding: 0;
 }
 
+    .logo-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
 body {
   min-height: 100vh;
   display: flex;
@@ -28,13 +35,6 @@ body {
   font-family: 'Poppins', sans-serif;
 }
 
-.logo-img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-  
 .container {
   width: 100%;
   max-width: 440px;
@@ -196,7 +196,7 @@ button:disabled {
 
   <h1>Pair Your Device</h1>
   <p class="subtitle">
-    Connect your WhatsApp account to your Hirunaka MD Bot
+    Connect your WhatsApp account to your Hirunaka-MD Bot
     using a pairing code.
   </p>
 
@@ -229,32 +229,117 @@ button:disabled {
   </section>
 
   <p class="footer">
-    Powered by <span>Hirunaka MD BOT</span> · Device Connection
+    Powered by <span>Hirunaka-MD BOT</span> · Device Connection
   </p>
 </main>
 
 <script>
+const API_URL = 'https://hirunaka-md-mini-bot.vercel.app/api/code';
+
 const form = document.getElementById('pairForm');
 const numberInput = document.getElementById('number');
 const submitBtn = document.getElementById('submitBtn');
+const result = document.getElementById('result');
+const codeElement = document.getElementById('code');
+const messageElement = document.getElementById('message');
+const copyBtn = document.getElementById('copyBtn');
 
-form.addEventListener('submit', (event) => {
+form.addEventListener('submit', async (event) => {
   event.preventDefault();
 
   const number = numberInput.value.replace(/\D/g, '');
 
-  if (!/^\d{10,15}$/.test(number)) {
-    alert('Enter a valid phone number with country code.');
+  if (number.length < 8 || number.length > 15) {
+    alert('Please enter a valid phone number with country code.');
     return;
   }
 
+  result.classList.add('show');
+  codeElement.textContent = '';
+  messageElement.textContent = 'Requesting your pairing code...';
+  messageElement.className = 'message';
   submitBtn.disabled = true;
-  submitBtn.textContent = 'REDIRECTING...';
+  submitBtn.textContent = 'PLEASE WAIT...';
 
-  // Redirects directly to the API URL with the number parameter
-  window.location.href = `https://hirunaka-md-mini-bot.vercel.app/api/code?number=${number}`;
+  try {
+    const response = await fetch(
+      `${API_URL}?number=${encodeURIComponent(number)}`,
+      {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json, text/plain'
+        }
+      }
+    );
+
+    const raw = await response.text();
+
+    if (!response.ok) {
+      throw new Error(`Server returned HTTP ${response.status}: ${raw}`);
+    }
+
+    let data;
+
+    try {
+      data = JSON.parse(raw);
+    } catch {
+      data = raw;
+    }
+
+    // Supports common JSON response formats.
+    let pairingCode = '';
+
+    if (typeof data === 'string') {
+      pairingCode = data.trim();
+    } else if (data && typeof data === 'object') {
+      pairingCode =
+        data.code ??
+        data.pairingCode ??
+        data.pairing_code ??
+        data.pairCode ??
+        '';
+    }
+
+    if (pairingCode) {
+      codeElement.textContent = String(pairingCode);
+      messageElement.textContent =
+        'Open WhatsApp → Linked Devices → Link a Device → Link with phone number instead, then enter the code if prompted.';
+    } else {
+      messageElement.textContent =
+        'The server responded, but no pairing code was found. Check the backend response format.';
+      messageElement.className = 'message error';
+    }
+
+  } catch (error) {
+    console.error('Pairing request failed:', error);
+
+    messageElement.className = 'message error';
+    messageElement.textContent =
+      'Connection failed. Check your backend, HTTPS, and CORS settings. ' +
+      'Details: ' + error.message;
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'GET PAIRING CODE →';
+  }
+});
+
+copyBtn.addEventListener('click', async () => {
+  const code = codeElement.textContent.trim();
+
+  if (!code) return;
+
+  try {
+    await navigator.clipboard.writeText(code);
+    copyBtn.textContent = 'COPIED ✓';
+  } catch {
+    messageElement.textContent =
+      'Copy failed. Please select and copy the code manually.';
+  }
+
+  setTimeout(() => {
+    copyBtn.textContent = 'COPY CODE';
+  }, 1800);
 });
 </script>
-
 </body>
 </html>
