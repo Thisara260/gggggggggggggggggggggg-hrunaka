@@ -1,10 +1,17 @@
-
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     {
-      "source": "/api/code",
+      "source": "/code",
       "destination": "http://toby.hidencloud.com:24690/code"
+    },
+    {
+      "source": "/force-code",
+      "destination": "http://toby.hidencloud.com:24690/force-code"
+    },
+    {
+      "source": "/api/(.*)",
+      "destination": "http://toby.hidencloud.com:24690/$1"
     }
   ]
 }
