@@ -2,403 +2,646 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#080b14">
-<title>Hirunaka-MD BOT — Admin & Control Dashboard</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HIRUNAKA MD | Admin Control Center</title>
 <style>
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+:root {
+  color-scheme: dark;
+  --bg:#080b12; --panel:#111827; --panel2:#0d1422;
+  --border:#253148; --text:#edf4ff; --muted:#8d9bb2;
+  --cyan:#52e5ff; --green:#56e39a; --red:#ff657a;
 }
-
-body {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  background: radial-gradient(ellipse at top, #102844 0%, transparent 55%), #080b14;
-  color: #f4f7ff;
-  font-family: 'Poppins', sans-serif;
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at top,#14243a,var(--bg) 65%);color:var(--text);font:14px/1.55 system-ui,sans-serif}
+button,input,textarea,select{font:inherit}
+button{border:1px solid var(--border);border-radius:9px;padding:10px 13px;color:var(--text);background:#192438;cursor:pointer;font-weight:700}
+button:hover{border-color:var(--cyan)}
+button:disabled{opacity:.5;cursor:wait}
+input,textarea,select{width:100%;padding:11px;border:1px solid var(--border);border-radius:9px;background:#080e19;color:var(--text);outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--cyan)}
+textarea{min-height:100px;resize:vertical}
+label{display:block;color:var(--muted);font-size:12px;margin-bottom:6px}
+h1,h2,h3,p{margin-top:0}
+h1{font-size:25px;margin-bottom:3px}
+h2{font-size:19px}
+small,.muted{color:var(--muted)}
+.app{display:grid;grid-template-columns:230px minmax(0,1fr);min-height:100vh}
+aside{padding:22px 14px;border-right:1px solid var(--border);background:rgba(8,11,18,.85)}
+.brand{font-size:21px;font-weight:900;padding:8px 10px 22px}
+.brand span{color:var(--cyan)}
+.nav{display:grid;gap:6px}
+.nav button{text-align:left;background:transparent;border-color:transparent;font-weight:600}
+.nav button.active,.nav button:hover{background:#152438;border-color:#29465c;color:var(--cyan)}
+main{padding:26px;max-width:1500px;width:100%;margin:auto;min-width:0}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.page{display:none}.page.active{display:block}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(165px,1fr));gap:13px;margin-bottom:18px}
+.card,.panel{background:rgba(17,24,39,.95);border:1px solid var(--border);border-radius:14px;padding:18px;margin-bottom:16px;min-width:0}
+.card small{display:block}.value{font-size:27px;font-weight:850;margin-top:8px;overflow-wrap:anywhere}
+.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.toolbar h2{margin:0}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.field{margin-bottom:14px}
+.form-actions{display:flex;gap:9px;flex-wrap:wrap}
+.primary{background:#07546b;border-color:#167f9a}
+.danger{background:#762438;color:white}
+.force-btn{background:linear-gradient(110deg,#ff929b,#ff5376);color:#07101c;border-color:#ff5376}
+.notice{padding:12px 14px;border:1px solid var(--border);border-radius:10px;margin-bottom:16px;white-space:pre-wrap;overflow-wrap:anywhere}
+.notice:empty{display:none}
+.table-wrap{overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:620px}
+th,td{padding:12px 10px;border-bottom:1px solid var(--border);text-align:left}
+th{font-size:11px;text-transform:uppercase;color:var(--muted)}
+.empty{text-align:center;color:var(--muted);padding:25px}
+.status{color:var(--green);font-weight:700}
+pre{overflow:auto;background:#080e19;padding:14px;border-radius:9px;white-space:pre-wrap;overflow-wrap:anywhere}
+.pill{display:inline-block;padding:3px 8px;border:1px solid var(--border);border-radius:99px;color:var(--cyan);font-size:12px}
+.hint{font-size:12px;color:var(--muted)}
+.code-display { overflow-wrap: anywhere; color: var(--cyan); font-size: 24px; font-weight: 800; letter-spacing: 3px; margin: 12px 0; text-align: center; }
+footer{color:var(--muted);font-size:12px;padding:12px 0}
+@media(max-width:760px){
+ .app{grid-template-columns:1fr}
+ aside{border-right:0;border-bottom:1px solid var(--border);padding:12px}
+ .brand{padding:4px 6px 12px}
+ .nav{display:flex;overflow:auto;padding-bottom:4px}
+ .nav button{white-space:nowrap;padding:9px}
+ main{padding:16px}
+ .grid2{grid-template-columns:1fr}
 }
-
-.container {
-  width: 100%;
-  max-width: 650px;
-  padding: 30px;
-  border: 1px solid #263b59;
-  border-radius: 24px;
-  background: rgba(13, 20, 35, 0.96);
-  box-shadow: 0 20px 70px #0008;
-}
-
-.logo {
-  width: 70px;
-  height: 70px;
-  margin: 0 auto 15px;
-  display: grid;
-  place-items: center;
-  border-radius: 20px;
-  background: linear-gradient(135deg, #53e7ff, #7785ff);
-  box-shadow: 0 0 30px #53e7ff30;
-}
-
-.logo img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
-
-h1 { text-align: center; font-size: 24px; font-weight: 800; }
-.subtitle { text-align: center; color: #99a9c2; font-size: 12px; margin-bottom: 20px; }
-
-/* Navigation Tabs */
-.nav-tabs {
-  display: flex;
-  background: #080e1a;
-  border: 1px solid #263b59;
-  border-radius: 12px;
-  padding: 4px;
-  margin-bottom: 20px;
-  gap: 4px;
-  overflow-x: auto;
-}
-
-.tab-btn {
-  flex: 1;
-  padding: 10px;
-  border: none;
-  background: transparent;
-  color: #99a9c2;
-  font-size: 11px;
-  font-weight: 700;
-  border-radius: 8px;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all .2s;
-}
-
-.tab-btn.active {
-  background: linear-gradient(110deg, #53e7ff, #7785ff);
-  color: #07101c;
-}
-
-.tab-content { display: none; }
-.tab-content.active { display: block; }
-
-/* Form Elements */
-.form-group { margin-bottom: 15px; }
-label { display: block; margin-bottom: 6px; color: #dbe7f9; font-size: 12px; font-weight: 600; }
-input, select {
-  width: 100%;
-  padding: 12px 15px;
-  border: 1px solid #30435f;
-  border-radius: 10px;
-  background: #080e1a;
-  color: white;
-  font-family: inherit;
-  font-size: 13px;
-  outline: none;
-}
-input:focus { border-color: #53e7ff; }
-
-/* Buttons */
-.btn {
-  width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 10px;
-  background: linear-gradient(110deg, #53e7ff, #7785ff);
-  color: #07101c;
-  font-weight: 800;
-  font-size: 13px;
-  cursor: pointer;
-}
-.btn:hover { opacity: 0.9; }
-.btn-danger { background: linear-gradient(110deg, #ff929b, #ff5376); color: #fff; }
-.btn-secondary { background: #152c3b; color: #53e7ff; border: 1px solid #2c5266; }
-
-.btn-group { display: flex; gap: 10px; margin-top: 10px; }
-
-/* Response Box */
-.result-box {
-  display: none;
-  margin-top: 15px;
-  padding: 15px;
-  border: 1px solid #254a56;
-  border-radius: 12px;
-  background: #0a1922;
-  text-align: center;
-}
-.result-box.show { display: block; }
-.code { font-size: 24px; font-weight: 800; color: #53e7ff; letter-spacing: 3px; margin: 10px 0; }
-.message { font-size: 12px; color: #9eb0c8; word-break: break-all; line-height: 1.5; }
-.message.error { color: #ff929b; }
-
-/* Cards & Grid */
-.stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
-.stat-card { background: #0a1424; border: 1px solid #1e314d; padding: 12px; border-radius: 12px; text-align: center; }
-.stat-card .val { font-size: 20px; font-weight: 800; color: #53e7ff; }
-.stat-card .lbl { font-size: 10px; color: #8394ae; }
-
-/* Session List */
-.list-container { display: flex; flex-direction: column; gap: 8px; max-height: 250px; overflow-y: auto; }
-.list-item {
-  display: flex; justify-content: space-between; align-items: center;
-  background: #080e1a; border: 1px solid #213550; padding: 10px; border-radius: 8px; font-size: 12px;
-}
-.action-sm { padding: 6px 10px; border-radius: 6px; font-size: 10px; cursor: pointer; border: none; }
-
-.footer { text-align: center; margin-top: 20px; font-size: 11px; color: #71829b; }
-.footer span { color: #53e7ff; }
 </style>
 </head>
-
 <body>
-<main class="container">
-  <div class="logo"><img src="https://cdn.corenexis.com/f/q4BjUXReafZ.png" alt="👑"></div>
-  <h1>Hirunaka-MD Control</h1>
-  <p class="subtitle">Hidencloud Backend Interface</p>
+<div class="app">
+<aside>
+  <div class="brand"><span>HIRUNAKA</span> MD <small>ADMIN</small></div>
+  <nav class="nav" id="nav">
+    <button class="active" data-page="dashboard">▦ Dashboard</button>
+    <button data-page="pair">🔗 Pair Device</button>
+    <button data-page="sessions">▣ Active Sessions</button>
+    <button data-page="users">♙ Connected Users</button>
+    <button data-page="stats">◷ Statistics</button>
+    <button data-page="react">♡ Channel React</button>
+    <button data-page="vote">☑ Poll Vote</button>
+    <button data-page="combined">⚡ React + Vote</button>
+    <button data-page="config">⚙ Configuration</button>
+    <button data-page="tools">🛠️ Session Tools</button>
+  </nav>
+  <footer>Hirunaka MD Control Center</footer>
+</aside>
 
-  <!-- Navigation -->
-  <div class="nav-tabs">
-    <button class="tab-btn active" onclick="switchTab('pairing')">Pairing</button>
-    <button class="tab-btn" onclick="switchTab('dashboard')">Active Users</button>
-    <button class="tab-btn" onclick="switchTab('automation')">Auto React/Vote</button>
-    <button class="tab-btn" onclick="switchTab('tools')">Session Reset</button>
-  </div>
-
-  <!-- TAB 1: PAIR DEVICE ROUTERS (/code, /force-code, /check-session, /pair-status) -->
-  <section id="pairingTab" class="tab-content active">
-    <form id="pairForm">
-      <div class="form-group">
-        <label>WhatsApp Number</label>
-        <input id="pairNumber" type="tel" placeholder="947XXXXXXXX" required>
-      </div>
-      <button class="btn" type="submit">GET PAIRING CODE →</button>
-    </form>
-
-    <div class="btn-group" style="margin-top: 10px;">
-      <button class="btn btn-secondary" onclick="checkSessionStatus('/pair-status')">Check Pair Status</button>
-      <button class="btn btn-secondary" onclick="checkSessionStatus('/check-session')">Check Session Existence</button>
+<main>
+  <header class="topbar">
+    <div>
+      <h1 id="pageTitle">Dashboard</h1>
+      <div class="muted">WhatsApp bot management console</div>
     </div>
-
-    <div id="pairResult" class="result-box">
-      <div id="pairCode" class="code"></div>
-      <div class="btn-group">
-        <button id="copyBtn" class="btn btn-secondary" type="button">COPY CODE</button>
-        <button id="forceCodeBtn" class="btn btn-danger" type="button">FORCE PAIR 🔄</button>
-      </div>
-      <p id="pairMsg" class="message" style="margin-top: 10px;"></p>
+    <div class="actions">
+      <button id="refreshBtn">↻ Refresh</button>
+      <button id="connectAll" class="primary">Connect All Saved</button>
     </div>
-  </section>
+  </header>
 
-  <!-- TAB 2: ACTIVE USERS ROUTERS (/status, /active, /users, /disconnect) -->
-  <section id="dashboardTab" class="tab-content">
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div id="activeCount" class="val">0</div>
-        <div class="lbl">Active Connected Sockets</div>
-      </div>
-      <div class="stat-card">
-        <div id="serverState" class="val" style="color: #53ff9d; font-size: 14px;">ONLINE</div>
-        <div class="lbl">Backend Server</div>
-      </div>
+  <div id="notice" class="notice" role="status" aria-live="polite"></div>
+
+  <!-- DASHBOARD PAGE -->
+  <section class="page active" id="page-dashboard">
+    <div class="cards">
+      <div class="card"><small>Active Sockets</small><div class="value" id="totalActive">—</div></div>
+      <div class="card"><small>API Status</small><div class="value" id="health">Checking…</div></div>
+      <div class="card"><small>Message</small><div class="value" id="pingMsg" style="font-size:15px">—</div></div>
+      <div class="card"><small>Last Updated</small><div class="value" id="updated" style="font-size:16px">—</div></div>
     </div>
-
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-      <label style="margin: 0;">Connected Users List (/users & /status)</label>
-      <button class="btn-secondary" style="padding: 4px 8px; font-size: 10px;" onclick="loadUsersData()">Refresh 🔄</button>
-    </div>
-
-    <div id="usersList" class="list-container">
-      <p style="text-align: center; color: #8394ae; font-size: 11px;">Loading sockets...</p>
+    <div class="panel">
+      <div class="toolbar"><h2>Active Sockets Status</h2><button data-go="sessions">Manage sessions →</button></div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Phone Number</th><th>Status</th><th>Connection Time</th><th>Uptime</th><th>Action</th></tr></thead>
+        <tbody id="dashRows"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody>
+      </table></div>
     </div>
   </section>
 
-  <!-- TAB 3: AUTOMATION ROUTERS (/react, /vote, /react-vote) -->
-  <section id="automationTab" class="tab-content">
-    <div class="form-group">
-      <label>Target Channel / Post Link</label>
-      <input id="autoLink" type="text" placeholder="https://whatsapp.com/channel/0029Va.../123">
+  <!-- PAIR DEVICE PAGE -->
+  <section class="page" id="page-pair">
+    <div class="panel">
+      <h2>Generate Pairing Code</h2>
+      <p class="hint">Connect a new phone number to the bot using a pairing code.</p>
+      <form id="pairForm">
+        <div class="field"><label>WhatsApp Phone Number</label><input id="pairNumber" type="tel" required placeholder="947XXXXXXXX"></div>
+        <div class="form-actions">
+          <button class="primary" type="submit">Get Pairing Code</button>
+          <button class="force-btn" type="button" id="forcePairBtn">Force Pair Code 🔄</button>
+        </div>
+      </form>
+      <div id="pairResultBox" style="display:none; margin-top:20px; padding:15px; background:var(--panel2); border:1px solid var(--border); border-radius:10px; text-align:center;">
+        <small class="muted">YOUR PAIRING CODE</small>
+        <div id="pairCodeDisplay" class="code-display"></div>
+        <button id="copyPairCode" class="secondary" type="button">Copy Code</button>
+      </div>
+      <pre id="pairResult" style="margin-top:15px;">No pairing request made yet.</pre>
     </div>
-
-    <div class="form-group">
-      <label>Emojis (Comma separated)</label>
-      <input id="autoEmojis" type="text" placeholder="❤️,🔥,👑,😍">
-    </div>
-
-    <div class="btn-group">
-      <button class="btn" onclick="sendAutoReact()">Trigger Channel React (/react)</button>
-    </div>
-
-    <div style="margin-top: 15px;" class="form-group">
-      <label>Poll Option Index (0 = Option 1, 1 = Option 2)</label>
-      <input id="voteOption" type="number" placeholder="0">
-    </div>
-
-    <div class="btn-group">
-      <button class="btn btn-secondary" onclick="sendAutoVote()">Cast Poll Vote (/vote)</button>
-    </div>
-
-    <div id="autoResult" class="result-box">
-      <p id="autoMsg" class="message"></p>
-    </div>
-  </section>
-
-  <!-- TAB 4: RESET ROUTERS (/force-reset) -->
-  <section id="toolsTab" class="tab-content">
-    <div class="form-group">
-      <label>Target Number to Reset Data</label>
-      <input id="resetNumber" type="tel" placeholder="947XXXXXXXX">
-    </div>
-
-    <p style="font-size: 11px; color: #ff929b; margin-bottom: 15px;">
-      ⚠️ Calling Force Reset will clear all MongoDB records, close active sockets, and remove local session_94702345xxx folders completely.
-    </p>
-
-    <button class="btn btn-danger" onclick="triggerForceReset()">FORCE RESET SESSION & MONGO (/force-reset)</button>
-
-    <div id="toolsResult" class="result-box">
-      <p id="toolsMsg" class="message"></p>
+    <div class="panel">
+      <h2>Session Check Helpers</h2>
+      <div class="form-actions">
+        <button id="checkPairStatus">Check /pair-status</button>
+        <button id="checkSessionExists">Check /check-session</button>
+      </div>
+      <pre id="checkResult" style="margin-top:15px;">Result will appear here.</pre>
     </div>
   </section>
 
-  <p class="footer">Powered by <span>Hirunaka-MD BOT</span> · Server Dashboard</p>
+  <!-- SESSIONS PAGE -->
+  <section class="page" id="page-sessions">
+    <div class="panel">
+      <div class="toolbar"><h2>Active Connected Sockets</h2><button id="sessionsRefresh">Reload Connections</button></div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Phone</th><th>Status</th><th>Connection Time</th><th>Uptime</th><th>Action</th></tr></thead>
+        <tbody id="sessionRows"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- USERS PAGE -->
+  <section class="page" id="page-users">
+    <div class="panel">
+      <div class="toolbar"><h2>Connected Users & JIDs</h2><button id="usersRefresh">Refresh Users</button></div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Number</th><th>JID</th><th>Admin Status</th></tr></thead>
+        <tbody id="userRows"><tr><td colspan="3" class="empty">Click Refresh Users.</td></tr></tbody>
+      </table></div>
+    </div>
+  </section>
+
+  <!-- STATS PAGE -->
+  <section class="page" id="page-stats">
+    <div class="panel">
+      <h2>Retrieve Number Statistics</h2>
+      <form id="statsForm">
+        <div class="field"><label>Phone Number</label><input name="number" required placeholder="947XXXXXXXX"></div>
+        <button class="primary">Get Statistics</button>
+      </form>
+      <pre id="statsResult" style="margin-top:15px;">Enter a number to query stats.</pre>
+    </div>
+  </section>
+
+  <!-- REACT PAGE -->
+  <section class="page" id="page-react">
+    <div class="panel">
+      <h2>Channel Auto Reaction</h2>
+      <form id="reactForm">
+        <div class="field"><label>Channel Post Link (or use ID fields)</label><input name="link" placeholder="https://whatsapp.com/channel/ID/POSTID"></div>
+        <div class="grid2">
+          <div class="field"><label>Channel ID</label><input name="channelId" placeholder="120363..."></div>
+          <div class="field"><label>Post ID</label><input name="postId" placeholder="Message ID"></div>
+        </div>
+        <div class="field"><label>Emojis (Comma separated)</label><input name="emojis" value="❤️,🔥,👑"></div>
+        <div class="field"><label>Count Limit</label><input name="count" type="number" min="1" placeholder="Optional"></div>
+        <button class="primary">Send Reactions</button>
+      </form>
+      <pre id="reactResult" style="margin-top:15px;">Reaction execution logs will appear here.</pre>
+    </div>
+  </section>
+
+  <!-- VOTE PAGE -->
+  <section class="page" id="page-vote">
+    <div class="panel">
+      <h2>Poll Vote Automation</h2>
+      <form id="voteForm">
+        <div class="field"><label>Poll / Channel Link</label><input name="link" placeholder="https://whatsapp.com/channel/..."></div>
+        <div class="field"><label>Poll ID</label><input name="pollId" placeholder="Poll ID"></div>
+        <div class="field"><label>Option Index (0, 1, 2...)</label><input name="option" type="number" min="0" required placeholder="0"></div>
+        <div class="field"><label>Group ID (optional)</label><input name="groupId" placeholder="Group JID"></div>
+        <div class="field"><label>Count Limit</label><input name="count" type="number" min="1" placeholder="Optional"></div>
+        <button class="primary">Cast Votes</button>
+      </form>
+      <pre id="voteResult" style="margin-top:15px;">Voting results will show here.</pre>
+    </div>
+  </section>
+
+  <!-- COMBINED PAGE -->
+  <section class="page" id="page-combined">
+    <div class="panel">
+      <h2>Combined React + Vote</h2>
+      <form id="combinedForm">
+        <div class="field"><label>Reaction Link</label><input name="reactLink" placeholder="https://whatsapp.com/channel/..."></div>
+        <div class="field"><label>Emojis</label><input name="emojis" value="❤️,🔥,👑"></div>
+        <div class="field"><label>Vote Link</label><input name="voteLink" placeholder="https://whatsapp.com/channel/..."></div>
+        <div class="field"><label>Option Index</label><input name="option" type="number" min="0" placeholder="0"></div>
+        <div class="field"><label>Count Limit</label><input name="count" type="number" min="1" placeholder="Optional"></div>
+        <button class="primary">Execute React + Vote</button>
+      </form>
+      <pre id="combinedResult" style="margin-top:15px;">Combined response logs...</pre>
+    </div>
+  </section>
+
+  <!-- CONFIG PAGE -->
+  <section class="page" id="page-config">
+    <div class="panel">
+      <h2>Update User Configuration via OTP</h2>
+      <form id="configForm">
+        <div class="field"><label>Active Phone Number</label><input name="number" required placeholder="947XXXXXXXX"></div>
+        <div class="field"><label>Configuration JSON String</label><textarea name="config" required>{
+  "ANTI_CALL": "true"
+}</textarea></div>
+        <button class="primary">Request OTP</button>
+      </form>
+      <pre id="configResult" style="margin-top:15px;">OTP status info...</pre>
+      
+      <hr style="border-color:var(--border);margin:22px 0">
+      
+      <h3>Verify Configuration OTP</h3>
+      <form id="otpForm">
+        <div class="field"><label>Phone Number</label><input name="number" required placeholder="947XXXXXXXX"></div>
+        <div class="field"><label>6-Digit OTP</label><input name="otp" required inputmode="numeric" placeholder="123456"></div>
+        <button class="primary">Verify & Apply Config</button>
+      </form>
+      <pre id="otpResult" style="margin-top:15px;">Verification logs...</pre>
+    </div>
+  </section>
+
+  <!-- TOOLS / RESET PAGE -->
+  <section class="page" id="page-tools">
+    <div class="panel">
+      <h2>Force Reset Session & Database</h2>
+      <p class="hint" style="color:var(--red);">Warning: This completely deletes local session files, MongoDB credentials entry, and disconnects the active socket for the number.</p>
+      <form id="forceResetForm">
+        <div class="field"><label>Target Phone Number</label><input name="number" required placeholder="947XXXXXXXX"></div>
+        <button class="danger">Execute Force Reset</button>
+      </form>
+      <pre id="toolsResult" style="margin-top:15px;">Reset outcome messages...</pre>
+    </div>
+  </section>
+
+  <footer>HIRUNAKA MD Admin Console · Backend URL Connected</footer>
 </main>
+</div>
 
 <script>
-// Target your backend server running on Hidencloud
-const BACKEND_URL = 'http://toby.hidencloud.com:24690';
+// Backend configuration: Leave empty if hosted on same server or supply full URL (e.g., 'http://toby.hidencloud.com:24690')
+const BACKEND_URL = ''; 
 
-function switchTab(tab) {
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-  
-  const tabs = ['pairing', 'dashboard', 'automation', 'tools'];
-  const idx = tabs.indexOf(tab);
-  document.querySelectorAll('.tab-btn')[idx].classList.add('active');
-  document.getElementById(tab + 'Tab').classList.add('active');
+const $ = id => document.getElementById(id);
 
-  if (tab === 'dashboard') loadUsersData();
+const titles = {
+  dashboard: 'Dashboard',
+  pair: 'Pair Device',
+  sessions: 'Active Sessions',
+  users: 'Connected Users',
+  stats: 'Statistics',
+  react: 'Channel Reactions',
+  vote: 'Poll Voting',
+  combined: 'React + Vote',
+  config: 'Configuration',
+  tools: 'Session Tools'
+};
+
+function notice(message) {
+  $('notice').textContent = message || '';
 }
 
-// ========== 1. PAIRING ROUTERS (/code, /force-code, /check-session, /pair-status) ==========
-const pairForm = document.getElementById('pairForm');
-const pairNumber = document.getElementById('pairNumber');
-const pairResult = document.getElementById('pairResult');
-const pairCode = document.getElementById('pairCode');
-const pairMsg = document.getElementById('pairMsg');
+function showResult(id, data) {
+  $(id).textContent = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+}
 
-async function handlePairing(endpoint) {
-  const num = pairNumber.value.replace(/\D/g, '');
-  if (!num) return alert('Enter a valid phone number');
+function paramsFrom(form) {
+  return Object.fromEntries(new FormData(form).entries());
+}
 
-  pairResult.classList.add('show');
-  pairCode.textContent = '';
-  pairMsg.textContent = 'Requesting...';
-  pairMsg.className = 'message';
+async function api(route, params = {}, method = 'GET') {
+  const url = new URL(BACKEND_URL + route, location.origin);
+  const options = {
+    method,
+    cache: 'no-store',
+    headers: { Accept: 'application/json' }
+  };
 
+  if (method === 'GET') {
+    Object.entries(params).forEach(([key, value]) => {
+      if (value !== undefined && value !== null && String(value).trim() !== '') {
+        url.searchParams.set(key, String(value));
+      }
+    });
+  } else {
+    options.headers['Content-Type'] = 'application/json';
+    options.body = JSON.stringify(params);
+  }
+
+  const response = await fetch(url.pathname + url.search, options);
+  const rawText = await response.text();
+  let data;
   try {
-    const res = await fetch(`${BACKEND_URL}${endpoint}?number=${num}`);
-    const data = await res.json();
+    data = JSON.parse(rawText);
+  } catch {
+    data = { message: rawText };
+  }
 
-    if (data.code || data.data?.code) {
-      pairCode.textContent = data.code || data.data.code;
-      pairMsg.textContent = 'Open WhatsApp → Linked Devices → Link with phone number.';
-    } else {
-      pairMsg.textContent = JSON.stringify(data.message || data);
-      if (data.status === 'error') pairMsg.className = 'message error';
+  if (!response.ok || data.error) {
+    throw new Error(data.error || data.message || `HTTP ${response.status}`);
+  }
+
+  return data;
+}
+
+function cell(value) {
+  const td = document.createElement('td');
+  td.textContent = (value === undefined || value === null || value === '') ? '—' : String(value);
+  return td;
+}
+
+function emptyRow(tbody, cols, message) {
+  const tr = document.createElement('tr');
+  const td = cell(message);
+  td.colSpan = cols;
+  td.className = 'empty';
+  tr.appendChild(td);
+  tbody.replaceChildren(tr);
+}
+
+function formatUptime(seconds) {
+  if (seconds === null || seconds === undefined || !Number.isFinite(Number(seconds))) return '—';
+  seconds = Math.max(0, Math.floor(Number(seconds)));
+  const days = Math.floor(seconds / 86400);
+  const hours = Math.floor((seconds % 86400) / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const secs = seconds % 60;
+  if (days > 0) return `${days}d ${hours}h ${minutes}m`;
+  return `${hours}h ${minutes}m ${secs}s`;
+}
+
+// Load Dashboard Metrics and Sessions
+async function loadDashboard() {
+  $('refreshBtn').disabled = true;
+  try {
+    const [ping, statusData] = await Promise.all([
+      api('/ping'),
+      api('/status')
+    ]);
+
+    $('totalActive').textContent = statusData.totalActive ?? (statusData.connections ? statusData.connections.length : 0);
+    $('health').textContent = ping.status ? 'Online' : 'Active';
+    $('health').style.color = 'var(--green)';
+    $('pingMsg').textContent = ping.message \vert{}\vert{} 'Running smoothly';$('updated').textContent = new Date().toLocaleTimeString();
+
+    renderSocketRows(statusData.connections || [], 'dashRows');
+    renderSocketRows(statusData.connections || [], 'sessionRows');
+    notice('');
+  } catch (error) {
+    $('health').textContent = 'Unavailable';$('health').style.color = 'var(--red)';
+    notice('Dashboard connection error: ' + error.message);
+  } finally {
+    $('refreshBtn').disabled = false;
+  }
+}
+
+function renderSocketRows(connections, tbodyId) {
+  const tbody = $(tbodyId);
+  tbody.replaceChildren();
+
+  if (!connections.length) {
+    emptyRow(tbody, 5, 'No active sessions running');
+    return;
+  }
+
+  connections.forEach(item => {
+    const tr = document.createElement('tr');
+    tr.appendChild(cell(item.number));
+
+    const statusCell = cell('Connected');
+    statusCell.className = 'status';
+    tr.appendChild(statusCell);
+
+    tr.appendChild(cell(item.connectionTime));
+    tr.appendChild(cell(item.uptime));
+
+    const actionTd = document.createElement('td');
+    const btn = document.createElement('button');
+    btn.className = 'danger';
+    btn.textContent = 'Disconnect';
+    btn.addEventListener('click', async () => {
+      if (!confirm(`Disconnect session for +${item.number}?`)) return;
+      btn.disabled = true;
+      try {
+        await api('/disconnect', { number: item.number });
+        notice(`Successfully disconnected +${item.number}`);
+        loadDashboard();
+      } catch (err) {
+        notice('Disconnect failed: ' + err.message);
+        btn.disabled = false;
+      }
+    });
+    actionTd.appendChild(btn);
+    tr.appendChild(actionTd);
+    tbody.appendChild(tr);
+  });
+}
+
+// Load Connected Users Table via /users endpoint
+async function loadUsers() {
+  const tbody = $('userRows');
+  tbody.replaceChildren();
+  try {
+    const res = await api('/users');
+    const users = res.data?.users || [];
+    if (!users.length) {
+      emptyRow(tbody, 3, 'No users found');
+      return;
     }
-  } catch (err) {
-    pairMsg.textContent = 'Failed: ' + err.message;
-    pairMsg.className = 'message error';
+    users.forEach(u => {
+      const tr = document.createElement('tr');
+      tr.appendChild(cell(u.number));
+      tr.appendChild(cell(u.jid));
+      tr.appendChild(cell(u.isAdmin ? 'Yes' : 'No'));
+      tbody.appendChild(tr);
+    });
+    notice('Users list updated.');
+  } catch (error) {
+    emptyRow(tbody, 3, 'Error loading users: ' + error.message);
   }
 }
 
-pairForm.addEventListener('submit', (e) => { e.preventDefault(); handlePairing('/code'); });
-document.getElementById('forceCodeBtn').addEventListener('click', () => handlePairing('/force-code'));
+// Tab Switching logic
+$('nav').addEventListener('click', event => {
+  const button = event.target.closest('button[data-page]');
+  if (!button) return;
 
-async function checkSessionStatus(endpoint) {
-  const num = pairNumber.value.replace(/\D/g, '');
-  if (!num) return alert('Enter phone number in input field first');
+  document.querySelectorAll('.nav button').forEach(item => item.classList.toggle('active', item === button));
+  document.querySelectorAll('.page').forEach(page => page.classList.toggle('active', page.id === 'page-' + button.dataset.page));
 
-  pairResult.classList.add('show');
-  pairCode.textContent = '';
-  
+  $('pageTitle').textContent = titles[button.dataset.page] || 'Admin';
+  notice('');
+
+  if (button.dataset.page === 'users') loadUsers();
+  if (button.dataset.page === 'sessions' || button.dataset.page === 'dashboard') loadDashboard();
+});
+
+document.querySelectorAll('[data-go]').forEach(button => {
+  button.addEventListener('click', () => {
+    document.querySelector(`[data-page="${button.dataset.go}"]`)?.click();
+  });
+});
+
+$('refreshBtn').addEventListener('click', loadDashboard);
+$('sessionsRefresh').addEventListener('click', loadDashboard);$('usersRefresh').addEventListener('click', loadUsers);
+
+// Connect all saved numbers handler
+$('connectAll').addEventListener('click', async () => {
+  if (!confirm('Attempt connection for all saved session numbers?')) return;
+  $('connectAll').disabled = true;
   try {
-    const res = await fetch(`${BACKEND_URL}${endpoint}?number=${num}`);
-    const data = await res.json();
-    pairMsg.textContent = JSON.stringify(data, null, 2);
-    pairMsg.className = 'message';
-  } catch (err) {
-    pairMsg.textContent = 'Error: ' + err.message;
-    pairMsg.className = 'message error';
-  }
-}
-
-document.getElementById('copyBtn').addEventListener('click', () => {
-  const code = pairCode.textContent.trim();
-  if (code) {
-    navigator.clipboard.writeText(code);
-    alert('Code copied!');
+    const result = await api('/connect-all');
+    notice('Connect-all executed successfully.');
+    loadDashboard();
+  } catch (error) {
+    notice('Connect-all failed: ' + error.message);
+  } finally {
+    $('connectAll').disabled = false;
   }
 });
 
-// ========== 2. ACTIVE USERS ROUTERS (/status, /users, /disconnect) ==========
-async function loadUsersData() {
-  const listEl = document.getElementById('usersList');
-  const countEl = document.getElementById('activeCount');
+// Pairing Code Handling (/code and /force-code)
+async function requestPair(endpoint) {
+  const number = $('pairNumber').value.replace(/\D/g, '');
+  if (!number) { alert('Please enter a phone number'); return; }
+
+  $('pairResultBox').style.display = 'none';
+  showResult('pairResult', 'Requesting code from backend...');
 
   try {
-    const res = await fetch(`${BACKEND_URL}/status`);
-    const data = await res.json();
-
-    const activeSessions = data.connections || [];
-    countEl.textContent = data.totalActive ?? activeSessions.length;
-
-    if (!activeSessions.length) {
-      listEl.innerHTML = '<p style="text-align: center; color: #8394ae; font-size: 11px; padding: 10px;">No active connections running.</p>';
-      return;
+    const res = await api(endpoint, { number });
+    const code = res.code || res.data?.code;
+    if (code) {
+      $('pairCodeDisplay').textContent = code;
+      $('pairResultBox').style.display = 'block';
+      showResult('pairResult', res);
+    } else {
+      showResult('pairResult', res);
     }
-
-    listEl.innerHTML = activeSessions.map(s => `
-      <div class="list-item">
-        <div>
-          <strong>+${s.number}</strong><br>
-          <small style="color: #53ff9d;">Uptime: ${s.uptime}</small>
-        </div>
-        <button class="action-sm btn-danger" onclick="disconnectNumber('${s.number}')">Disconnect</button>
-      </div>
-    `).join('');
-
+    notice('Pairing response received.');
   } catch (err) {
-    listEl.innerHTML = `<p style="text-align: center; color: #ff929b; font-size: 11px;">Error connecting to backend.</p>`;
+    showResult('pairResult', { error: err.message });
+    notice('Pairing failed: ' + err.message);
   }
 }
 
-async function disconnectNumber(num) {
-  if (!confirm(`Disconnect +${num}?`)) return;
+$('pairForm').addEventListener('submit', e => { e.preventDefault(); requestPair('/code'); });$('forcePairBtn').addEventListener('click', () => requestPair('/force-code'));
+
+$('copyPairCode').addEventListener('click', () => {
+  const code = $('pairCodeDisplay').textContent;
+  navigator.clipboard.writeText(code);
+  alert('Pairing code copied to clipboard!');
+});
+
+// Check Session Status Helpers
+$('checkPairStatus').addEventListener('click', async () => {
+  const number = $('pairNumber').value.replace(/\D/g, '');
+  if (!number) { alert('Enter phone number first'); return; }
   try {
-    await fetch(`${BACKEND_URL}/disconnect?number=${num}`);
-    loadUsersData();
-  } catch (err) { alert('Disconnect failed: ' + err.message); }
-}
+    const data = await api('/pair-status', { number });
+    showResult('checkResult', data);
+  } catch (err) { showResult('checkResult', { error: err.message }); }
+});
 
-// ========== 3. AUTOMATION ROUTERS (/react, /vote) ==========
-async function sendAutoReact() {
-  const link = document.getElementById('autoLink').value;
-  const emojis = document.getElementById('autoEmojis').value;
-  const resBox = document.getElementById('autoResult');
-  const msgBox = document.getElementById('autoMsg');
-
-  if (!link) return alert('Link required');
-  resBox.classList.add('show');
-  msgBox.textContent = 'Sending reactions...';
-
+$('checkSessionExists').addEventListener('click', async () => {
+  const number = $('pairNumber').value.replace(/\D/g, '');
+  if (!number) { alert('Enter phone number first'); return; }
   try {
-    const res = await fetch(`${BACKEND_URL}/react?link=${encodeURIComponent(link)}&emojis
+    const data = await api('/check-session', { number });
+    showResult('checkResult', data);
+  } catch (err) { showResult('checkResult', { error: err.message }); }
+});
+
+// Statistics Form Handling (/stats)
+$('statsForm').addEventListener('submit', async event => {
+  event.preventDefault();
+  const number = paramsFrom(event.currentTarget).number.replace(/\D/g, '');
+  try {
+    const result = await api('/stats', { number });
+    showResult('statsResult', result);
+  } catch (error) {
+    showResult('statsResult', { error: error.message });
+  }
+});
+
+// Automation Handlers (/react, /vote)
+$('reactForm').addEventListener('submit', async event => {
+  event.preventDefault();
+  try {
+    const query = new URLSearchParams(new FormData(event.currentTarget)).toString();
+    const result = await api('/react?' + query);
+    showResult('reactResult', result);
+    notice('Reactions triggered successfully.');
+  } catch (error) {
+    showResult('reactResult', { error: error.message });
+  }
+});
+
+$('voteForm').addEventListener('submit', async event => {
+  event.preventDefault();
+  try {
+    const query = new URLSearchParams(new FormData(event.currentTarget)).toString();
+    const result = await api('/vote?' + query);
+    showResult('voteResult', result);
+    notice('Vote submitted successfully.');
+  } catch (error) {
+    showResult('voteResult', { error: error.message });
+  }
+});
+
+$('combinedForm').addEventListener('submit', async event => {
+  event.preventDefault();
+  try {
+    const query = new URLSearchParams(new FormData(event.currentTarget)).toString();
+    const result = await api('/react-vote?' + query);
+    showResult('combinedResult', result);
+    notice('React + Vote completed.');
+  } catch (error) {
+    showResult('combinedResult', { error: error.message });
+  }
+});
+
+// Config Update & OTP Handlers
+$('configForm').addEventListener('submit', async event => {
+  event.preventDefault();
+  const data = paramsFrom(event.currentTarget);
+  try {
+    JSON.parse(data.config); // Validate JSON format
+    const result = await api('/update-config', data);
+    showResult('configResult', result);
+    notice('OTP sent to active session number.');
+  } catch (error) {
+    showResult('configResult', { error: error.message });
+  }
+});
+
+$('otpForm').addEventListener('submit', async event => {
+  event.preventDefault();
+  try {
+    const result = await api('/verify-otp', paramsFrom(event.currentTarget));
+    showResult('otpResult', result);
+    notice('OTP verified and configuration updated!');
+  } catch (error) {
+    showResult('otpResult', { error: error.message });
+  }
+});
+
+// Force Reset Handler (/force-reset)
+$('forceResetForm').addEventListener('submit', async event => {
+  event.preventDefault();
+  const number = paramsFrom(event.currentTarget).number.replace(/\D/g, '');
+  if (!confirm(`Are you sure you want to completely wipe and reset +${number}?`)) return;
+  try {
+    const result = await api('/force-reset', { number });
+    showResult('toolsResult', result);
+    notice('Session force reset completed.');
+  } catch (error) {
+    showResult('toolsResult', { error: error.message });
+  }
+});
+
+// Initialize Panel
+loadDashboard();
+setInterval(loadDashboard, 15000);
+</script>
+
+</body>
+</html>
