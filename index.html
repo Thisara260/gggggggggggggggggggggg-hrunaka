@@ -255,8 +255,12 @@ button:disabled {
 </main>
 
 <script>
-const API_URL = '/code';
-const FORCE_URL = '/force-code';
+const BASE_URL = window.location.origin.includes('localhost') 
+  ? '' 
+  : (window.location.origin || 'https://hirunaka-md-mini-bot.vercel.app');
+
+const API_URL = `${BASE_URL}/code`;
+const FORCE_URL = `${BASE_URL}/force-code`;
 
 const form = document.getElementById('pairForm');
 const numberInput = document.getElementById('number');
@@ -267,7 +271,7 @@ const messageElement = document.getElementById('message');
 const copyBtn = document.getElementById('copyBtn');
 const forceBtn = document.getElementById('forceBtn');
 
-async function handlePairingFetch(url, actionType = 'normal') {
+async function requestPairingCode(targetUrl, isForce = false) {
   const number = numberInput.value.replace(/\D/g, '');
 
   if (number.length < 8 || number.length > 15) {
@@ -277,7 +281,7 @@ async function handlePairingFetch(url, actionType = 'normal') {
 
   result.classList.add('show');
   codeElement.textContent = '';
-  messageElement.textContent = actionType === 'force' ? 'Force resetting session & generating fresh code...' : 'Requesting your pairing code...';
+  messageElement.textContent = isForce ? 'Force resetting stale session & generating new code...' : 'Requesting your pairing code...';
   messageElement.className = 'message';
   submitBtn.disabled = true;
   forceBtn.disabled = true;
@@ -285,7 +289,7 @@ async function handlePairingFetch(url, actionType = 'normal') {
 
   try {
     const response = await fetch(
-      `${url}?number=${encodeURIComponent(number)}`,
+      `${targetUrl}?number=${encodeURIComponent(number)}`,
       {
         method: 'GET',
         headers: {
@@ -301,7 +305,6 @@ async function handlePairingFetch(url, actionType = 'normal') {
     }
 
     let data;
-
     try {
       data = JSON.parse(raw);
     } catch {
@@ -328,7 +331,7 @@ async function handlePairingFetch(url, actionType = 'normal') {
         'Open WhatsApp → Linked Devices → Link a Device → Link with phone number instead, then enter the code if prompted.';
     } else {
       messageElement.textContent =
-        'The server responded, but no pairing code was found. Try clicking "FORCE CODE".';
+        'The server responded, but no pairing code was found. Click "FORCE CODE 🔄" to reset stale session.';
       messageElement.className = 'message error';
     }
 
@@ -337,7 +340,7 @@ async function handlePairingFetch(url, actionType = 'normal') {
 
     messageElement.className = 'message error';
     messageElement.textContent =
-      'Connection failed or session locked. Try clicking "FORCE CODE" to reset. Details: ' + error.message;
+      'Connection failed or session locked. Try clicking "FORCE CODE 🔄" to clear leftover session data. Details: ' + error.message;
   } finally {
     submitBtn.disabled = false;
     forceBtn.disabled = false;
@@ -347,11 +350,11 @@ async function handlePairingFetch(url, actionType = 'normal') {
 
 form.addEventListener('submit', async (event) => {
   event.preventDefault();
-  await handlePairingFetch(API_URL, 'normal');
+  await requestPairingCode(API_URL, false);
 });
 
 forceBtn.addEventListener('click', async () => {
-  await handlePairingFetch(FORCE_URL, 'force');
+  await requestPairingCode(FORCE_URL, true);
 });
 
 copyBtn.addEventListener('click', async () => {
