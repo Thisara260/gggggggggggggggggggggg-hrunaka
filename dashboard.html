@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080b14">
+<title>Hirunaka-MD BOT — Admin & Control Dashboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: radial-gradient(ellipse at top, #102844 0%, transparent 55%), #080b14;
+  color: #f4f7ff;
+  font-family: 'Poppins', sans-serif;
+}
+
+.container {
+  width: 100%;
+  max-width: 650px;
+  padding: 30px;
+  border: 1px solid #263b59;
+  border-radius: 24px;
+  background: rgba(13, 20, 35, 0.96);
+  box-shadow: 0 20px 70px #0008;
+}
+
+.logo {
+  width: 70px;
+  height: 70px;
+  margin: 0 auto 15px;
+  display: grid;
+  place-items: center;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #53e7ff, #7785ff);
+  box-shadow: 0 0 30px #53e7ff30;
+}
+
+.logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+h1 { text-align: center; font-size: 24px; font-weight: 800; }
+.subtitle { text-align: center; color: #99a9c2; font-size: 12px; margin-bottom: 20px; }
+
+/* Navigation Tabs */
+.nav-tabs {
+  display: flex;
+  background: #080e1a;
+  border: 1px solid #263b59;
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 20px;
+  gap: 4px;
+  overflow-x: auto;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: transparent;
+  color: #99a9c2;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all .2s;
+}
+
+.tab-btn.active {
+  background: linear-gradient(110deg, #53e7ff, #7785ff);
+  color: #07101c;
+}
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* Form Elements */
+.form-group { margin-bottom: 15px; }
+label { display: block; margin-bottom: 6px; color: #dbe7f9; font-size: 12px; font-weight: 600; }
+input, select {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #30435f;
+  border-radius: 10px;
+  background: #080e1a;
+  color: white;
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+}
+input:focus { border-color: #53e7ff; }
+
+/* Buttons */
+.btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(110deg, #53e7ff, #7785ff);
+  color: #07101c;
+  font-weight: 800;
+  font-size: 13px;
+  cursor: pointer;
+}
+.btn:hover { opacity: 0.9; }
+.btn-danger { background: linear-gradient(110deg, #ff929b, #ff5376); color: #fff; }
+.btn-secondary { background: #152c3b; color: #53e7ff; border: 1px solid #2c5266; }
+
+.btn-group { display: flex; gap: 10px; margin-top: 10px; }
+
+/* Response Box */
+.result-box {
+  display: none;
+  margin-top: 15px;
+  padding: 15px;
+  border: 1px solid #254a56;
+  border-radius: 12px;
+  background: #0a1922;
+  text-align: center;
+}
+.result-box.show { display: block; }
+.code { font-size: 24px; font-weight: 800; color: #53e7ff; letter-spacing: 3px; margin: 10px 0; }
+.message { font-size: 12px; color: #9eb0c8; word-break: break-all; line-height: 1.5; }
+.message.error { color: #ff929b; }
+
+/* Cards & Grid */
+.stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 15px; }
+.stat-card { background: #0a1424; border: 1px solid #1e314d; padding: 12px; border-radius: 12px; text-align: center; }
+.stat-card .val { font-size: 20px; font-weight: 800; color: #53e7ff; }
+.stat-card .lbl { font-size: 10px; color: #8394ae; }
+
+/* Session List */
+.list-container { display: flex; flex-direction: column; gap: 8px; max-height: 250px; overflow-y: auto; }
+.list-item {
+  display: flex; justify-content: space-between; align-items: center;
+  background: #080e1a; border: 1px solid #213550; padding: 10px; border-radius: 8px; font-size: 12px;
+}
+.action-sm { padding: 6px 10px; border-radius: 6px; font-size: 10px; cursor: pointer; border: none; }
+
+.footer { text-align: center; margin-top: 20px; font-size: 11px; color: #71829b; }
+.footer span { color: #53e7ff; }
+</style>
+</head>
+
+<body>
+<main class="container">
+  <div class="logo"><img src="https://cdn.corenexis.com/f/q4BjUXReafZ.png" alt="👑"></div>
+  <h1>Hirunaka-MD Control</h1>
+  <p class="subtitle">Hidencloud Backend Interface</p>
+
+  <!-- Navigation -->
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('pairing')">Pairing</button>
+    <button class="tab-btn" onclick="switchTab('dashboard')">Active Users</button>
+    <button class="tab-btn" onclick="switchTab('automation')">Auto React/Vote</button>
+    <button class="tab-btn" onclick="switchTab('tools')">Session Reset</button>
+  </div>
+
+  <!-- TAB 1: PAIR DEVICE ROUTERS (/code, /force-code, /check-session, /pair-status) -->
+  <section id="pairingTab" class="tab-content active">
+    <form id="pairForm">
+      <div class="form-group">
+        <label>WhatsApp Number</label>
+        <input id="pairNumber" type="tel" placeholder="947XXXXXXXX" required>
+      </div>
+      <button class="btn" type="submit">GET PAIRING CODE →</button>
+    </form>
+
+    <div class="btn-group" style="margin-top: 10px;">
+      <button class="btn btn-secondary" onclick="checkSessionStatus('/pair-status')">Check Pair Status</button>
+      <button class="btn btn-secondary" onclick="checkSessionStatus('/check-session')">Check Session Existence</button>
+    </div>
+
+    <div id="pairResult" class="result-box">
+      <div id="pairCode" class="code"></div>
+      <div class="btn-group">
+        <button id="copyBtn" class="btn btn-secondary" type="button">COPY CODE</button>
+        <button id="forceCodeBtn" class="btn btn-danger" type="button">FORCE PAIR 🔄</button>
+      </div>
+      <p id="pairMsg" class="message" style="margin-top: 10px;"></p>
+    </div>
+  </section>
+
+  <!-- TAB 2: ACTIVE USERS ROUTERS (/status, /active, /users, /disconnect) -->
+  <section id="dashboardTab" class="tab-content">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div id="activeCount" class="val">0</div>
+        <div class="lbl">Active Connected Sockets</div>
+      </div>
+      <div class="stat-card">
+        <div id="serverState" class="val" style="color: #53ff9d; font-size: 14px;">ONLINE</div>
+        <div class="lbl">Backend Server</div>
+      </div>
+    </div>
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+      <label style="margin: 0;">Connected Users List (/users & /status)</label>
+      <button class="btn-secondary" style="padding: 4px 8px; font-size: 10px;" onclick="loadUsersData()">Refresh 🔄</button>
+    </div>
+
+    <div id="usersList" class="list-container">
+      <p style="text-align: center; color: #8394ae; font-size: 11px;">Loading sockets...</p>
+    </div>
+  </section>
+
+  <!-- TAB 3: AUTOMATION ROUTERS (/react, /vote, /react-vote) -->
+  <section id="automationTab" class="tab-content">
+    <div class="form-group">
+      <label>Target Channel / Post Link</label>
+      <input id="autoLink" type="text" placeholder="https://whatsapp.com/channel/0029Va.../123">
+    </div>
+
+    <div class="form-group">
+      <label>Emojis (Comma separated)</label>
+      <input id="autoEmojis" type="text" placeholder="❤️,🔥,👑,😍">
+    </div>
+
+    <div class="btn-group">
+      <button class="btn" onclick="sendAutoReact()">Trigger Channel React (/react)</button>
+    </div>
+
+    <div style="margin-top: 15px;" class="form-group">
+      <label>Poll Option Index (0 = Option 1, 1 = Option 2)</label>
+      <input id="voteOption" type="number" placeholder="0">
+    </div>
+
+    <div class="btn-group">
+      <button class="btn btn-secondary" onclick="sendAutoVote()">Cast Poll Vote (/vote)</button>
+    </div>
+
+    <div id="autoResult" class="result-box">
+      <p id="autoMsg" class="message"></p>
+    </div>
+  </section>
+
+  <!-- TAB 4: RESET ROUTERS (/force-reset) -->
+  <section id="toolsTab" class="tab-content">
+    <div class="form-group">
+      <label>Target Number to Reset Data</label>
+      <input id="resetNumber" type="tel" placeholder="947XXXXXXXX">
+    </div>
+
+    <p style="font-size: 11px; color: #ff929b; margin-bottom: 15px;">
+      ⚠️ Calling Force Reset will clear all MongoDB records, close active sockets, and remove local session_94702345xxx folders completely.
+    </p>
+
+    <button class="btn btn-danger" onclick="triggerForceReset()">FORCE RESET SESSION & MONGO (/force-reset)</button>
+
+    <div id="toolsResult" class="result-box">
+      <p id="toolsMsg" class="message"></p>
+    </div>
+  </section>
+
+  <p class="footer">Powered by <span>Hirunaka-MD BOT</span> · Server Dashboard</p>
+</main>
+
+<script>
+// Target your backend server running on Hidencloud
+const BACKEND_URL = 'http://toby.hidencloud.com:24690';
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  
+  const tabs = ['pairing', 'dashboard', 'automation', 'tools'];
+  const idx = tabs.indexOf(tab);
+  document.querySelectorAll('.tab-btn')[idx].classList.add('active');
+  document.getElementById(tab + 'Tab').classList.add('active');
+
+  if (tab === 'dashboard') loadUsersData();
+}
+
+// ========== 1. PAIRING ROUTERS (/code, /force-code, /check-session, /pair-status) ==========
+const pairForm = document.getElementById('pairForm');
+const pairNumber = document.getElementById('pairNumber');
+const pairResult = document.getElementById('pairResult');
+const pairCode = document.getElementById('pairCode');
+const pairMsg = document.getElementById('pairMsg');
+
+async function handlePairing(endpoint) {
+  const num = pairNumber.value.replace(/\D/g, '');
+  if (!num) return alert('Enter a valid phone number');
+
+  pairResult.classList.add('show');
+  pairCode.textContent = '';
+  pairMsg.textContent = 'Requesting...';
+  pairMsg.className = 'message';
+
+  try {
+    const res = await fetch(`${BACKEND_URL}${endpoint}?number=${num}`);
+    const data = await res.json();
+
+    if (data.code || data.data?.code) {
+      pairCode.textContent = data.code || data.data.code;
+      pairMsg.textContent = 'Open WhatsApp → Linked Devices → Link with phone number.';
+    } else {
+      pairMsg.textContent = JSON.stringify(data.message || data);
+      if (data.status === 'error') pairMsg.className = 'message error';
+    }
+  } catch (err) {
+    pairMsg.textContent = 'Failed: ' + err.message;
+    pairMsg.className = 'message error';
+  }
+}
+
+pairForm.addEventListener('submit', (e) => { e.preventDefault(); handlePairing('/code'); });
+document.getElementById('forceCodeBtn').addEventListener('click', () => handlePairing('/force-code'));
+
+async function checkSessionStatus(endpoint) {
+  const num = pairNumber.value.replace(/\D/g, '');
+  if (!num) return alert('Enter phone number in input field first');
+
+  pairResult.classList.add('show');
+  pairCode.textContent = '';
+  
+  try {
+    const res = await fetch(`${BACKEND_URL}${endpoint}?number=${num}`);
+    const data = await res.json();
+    pairMsg.textContent = JSON.stringify(data, null, 2);
+    pairMsg.className = 'message';
+  } catch (err) {
+    pairMsg.textContent = 'Error: ' + err.message;
+    pairMsg.className = 'message error';
+  }
+}
+
+document.getElementById('copyBtn').addEventListener('click', () => {
+  const code = pairCode.textContent.trim();
+  if (code) {
+    navigator.clipboard.writeText(code);
+    alert('Code copied!');
+  }
+});
+
+// ========== 2. ACTIVE USERS ROUTERS (/status, /users, /disconnect) ==========
+async function loadUsersData() {
+  const listEl = document.getElementById('usersList');
+  const countEl = document.getElementById('activeCount');
+
+  try {
+    const res = await fetch(`${BACKEND_URL}/status`);
+    const data = await res.json();
+
+    const activeSessions = data.connections || [];
+    countEl.textContent = data.totalActive ?? activeSessions.length;
+
+    if (!activeSessions.length) {
+      listEl.innerHTML = '<p style="text-align: center; color: #8394ae; font-size: 11px; padding: 10px;">No active connections running.</p>';
+      return;
+    }
+
+    listEl.innerHTML = activeSessions.map(s => `
+      <div class="list-item">
+        <div>
+          <strong>+${s.number}</strong><br>
+          <small style="color: #53ff9d;">Uptime: ${s.uptime}</small>
+        </div>
+        <button class="action-sm btn-danger" onclick="disconnectNumber('${s.number}')">Disconnect</button>
+      </div>
+    `).join('');
+
+  } catch (err) {
+    listEl.innerHTML = `<p style="text-align: center; color: #ff929b; font-size: 11px;">Error connecting to backend.</p>`;
+  }
+}
+
+async function disconnectNumber(num) {
+  if (!confirm(`Disconnect +${num}?`)) return;
+  try {
+    await fetch(`${BACKEND_URL}/disconnect?number=${num}`);
+    loadUsersData();
+  } catch (err) { alert('Disconnect failed: ' + err.message); }
+}
+
+// ========== 3. AUTOMATION ROUTERS (/react, /vote) ==========
+async function sendAutoReact() {
+  const link = document.getElementById('autoLink').value;
+  const emojis = document.getElementById('autoEmojis').value;
+  const resBox = document.getElementById('autoResult');
+  const msgBox = document.getElementById('autoMsg');
+
+  if (!link) return alert('Link required');
+  resBox.classList.add('show');
+  msgBox.textContent = 'Sending reactions...';
+
+  try {
+    const res = await fetch(`${BACKEND_URL}/react?link=${encodeURIComponent(link)}&emojis
