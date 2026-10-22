@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,12 +15,13 @@
   padding: 0;
 }
 
-    .logo-img {
+.logo-img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: contain;
 }
+
 body {
   min-height: 100vh;
   display: flex;
@@ -157,12 +157,26 @@ button:disabled {
   letter-spacing: 3px;
 }
 
-.copy {
+.btn-group {
+  display: flex;
+  gap: 10px;
   margin-top: 15px;
+}
+
+.copy {
+  flex: 1;
   padding: 11px;
   background: #152c3b;
   color: #53e7ff;
   border: 1px solid #2c5266;
+}
+
+.force-btn {
+  flex: 1;
+  padding: 11px;
+  background: linear-gradient(110deg, #ff929b, #ff5376);
+  color: #07101c;
+  border: 1px solid #ff5376;
 }
 
 .message {
@@ -222,9 +236,16 @@ button:disabled {
   <section id="result" class="result" aria-live="polite">
     <p class="result-title">YOUR PAIRING CODE</p>
     <div id="code" class="code"></div>
-    <button id="copyBtn" class="copy" type="button">
-      COPY CODE
-    </button>
+    
+    <div class="btn-group">
+      <button id="copyBtn" class="copy" type="button">
+        COPY CODE
+      </button>
+      <button id="forceBtn" class="force-btn" type="button">
+        FORCE CODE 🔄
+      </button>
+    </div>
+
     <p id="message" class="message"></p>
   </section>
 
@@ -234,7 +255,8 @@ button:disabled {
 </main>
 
 <script>
-const API_URL = 'https://hirunaka-md-mini-bot.vercel.app/api/code';
+const API_URL = '/code';
+const FORCE_URL = '/force-code';
 
 const form = document.getElementById('pairForm');
 const numberInput = document.getElementById('number');
@@ -243,10 +265,9 @@ const result = document.getElementById('result');
 const codeElement = document.getElementById('code');
 const messageElement = document.getElementById('message');
 const copyBtn = document.getElementById('copyBtn');
+const forceBtn = document.getElementById('forceBtn');
 
-form.addEventListener('submit', async (event) => {
-  event.preventDefault();
-
+async function handlePairingFetch(url, actionType = 'normal') {
   const number = numberInput.value.replace(/\D/g, '');
 
   if (number.length < 8 || number.length > 15) {
@@ -256,14 +277,15 @@ form.addEventListener('submit', async (event) => {
 
   result.classList.add('show');
   codeElement.textContent = '';
-  messageElement.textContent = 'Requesting your pairing code...';
+  messageElement.textContent = actionType === 'force' ? 'Force resetting session & generating fresh code...' : 'Requesting your pairing code...';
   messageElement.className = 'message';
   submitBtn.disabled = true;
+  forceBtn.disabled = true;
   submitBtn.textContent = 'PLEASE WAIT...';
 
   try {
     const response = await fetch(
-      `${API_URL}?number=${encodeURIComponent(number)}`,
+      `${url}?number=${encodeURIComponent(number)}`,
       {
         method: 'GET',
         headers: {
@@ -286,7 +308,6 @@ form.addEventListener('submit', async (event) => {
       data = raw;
     }
 
-    // Supports common JSON response formats.
     let pairingCode = '';
 
     if (typeof data === 'string') {
@@ -297,6 +318,7 @@ form.addEventListener('submit', async (event) => {
         data.pairingCode ??
         data.pairing_code ??
         data.pairCode ??
+        data.data?.code ??
         '';
     }
 
@@ -306,7 +328,7 @@ form.addEventListener('submit', async (event) => {
         'Open WhatsApp → Linked Devices → Link a Device → Link with phone number instead, then enter the code if prompted.';
     } else {
       messageElement.textContent =
-        'The server responded, but no pairing code was found. Check the backend response format.';
+        'The server responded, but no pairing code was found. Try clicking "FORCE CODE".';
       messageElement.className = 'message error';
     }
 
@@ -315,12 +337,21 @@ form.addEventListener('submit', async (event) => {
 
     messageElement.className = 'message error';
     messageElement.textContent =
-      'Connection failed. Check your backend, HTTPS, and CORS settings. ' +
-      'Details: ' + error.message;
+      'Connection failed or session locked. Try clicking "FORCE CODE" to reset. Details: ' + error.message;
   } finally {
     submitBtn.disabled = false;
+    forceBtn.disabled = false;
     submitBtn.textContent = 'GET PAIRING CODE →';
   }
+}
+
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  await handlePairingFetch(API_URL, 'normal');
+});
+
+forceBtn.addEventListener('click', async () => {
+  await handlePairingFetch(FORCE_URL, 'force');
 });
 
 copyBtn.addEventListener('click', async () => {
